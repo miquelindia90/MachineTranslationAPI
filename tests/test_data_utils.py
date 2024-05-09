@@ -1,4 +1,5 @@
 import os
+import json
 import sys
 
 sys.path.append("./src")
@@ -18,6 +19,10 @@ def test_SingleTokenizer_training_model():
     assert tokenizer_dictionary["SOS"] == 0
     assert tokenizer_dictionary["UNK"] == 104452
     tokenizer.save_tokens_dictionary("tests/examples/output_tokens.json")
+    with open("tests/examples/reference_tokens.json", "r") as target_file,  open("tests/examples/output_tokens.json", "r") as output_file:
+        target_dict = json.load(target_file)
+        output_dict = json.load(output_file)
+        assert target_dict == output_dict
 
 def test_SingleTokenizer_inference_model():
     tokenizer = SingleTokenizer()
