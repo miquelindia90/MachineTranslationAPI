@@ -28,7 +28,7 @@ class SingleTokenizer:
     
     def save_tokens_dictionary(self, output_file_path: str):
         with open(output_file_path, "w") as output_file:
-            json.dump(self._tokens_dictionary, output_file)
+            json.dump(self._tokens_dictionary, output_file, indent=4)
 
     def train(self, file_path: str, metadata_path: str = "None", language_filter_str: str = '"src_lang": "da"') -> None:
         self._tokens_dictionary["SOS"] = 0
