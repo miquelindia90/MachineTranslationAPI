@@ -27,7 +27,7 @@ def test_SingleTokenizer_training_model():
         target_dict = json.load(target_file)
         output_dict = json.load(output_file)
         assert target_dict == output_dict
-
+    os.remove("tests/examples/output_tokens.json")
 
 def test_SingleTokenizer_inference_model():
     tokenizer = SingleTokenizer()
