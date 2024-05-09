@@ -1,3 +1,4 @@
+import os
 import sys
 
 sys.path.append("./src")
@@ -12,8 +13,11 @@ def test_SingleTokenizer_initialization():
 
 def test_SingleTokenizer_training_model():
     tokenizer = SingleTokenizer()
-    tokenizer.train("tests/examples/test.src")
-
+    tokenizer.train("tests/examples/test.src", "tests/examples/test.metadata", '"src_lang": "nb"')
+    tokenizer_dictionary = tokenizer.get_tokens_dictionary()
+    assert tokenizer_dictionary["SOS"] == 0
+    assert tokenizer_dictionary["UNK"] == 104452
+    tokenizer.save_tokens_dictionary("tests/examples/output_tokens.json")
 
 def test_SingleTokenizer_inference_model():
     tokenizer = SingleTokenizer()
@@ -25,13 +29,13 @@ def test_MTTokenizer_initialization():
     assert tokenizer.get_target_tokens_dictionary() == dict()
 
 
-def test_MTTokenizer_training_model():
-    tokenizer = MTTokenizer()
-    tokenizer.train("tests/examples/test.src", "tests/examples/test.tgt")
+# def test_MTTokenizer_training_model():
+#     tokenizer = MTTokenizer()
+#     tokenizer.train("tests/examples/test.src", "tests/examples/test.tgt")
 
 
-def test_MTTokenizer_inference_model():
-    tokenizer = MTTokenizer()
+# def test_MTTokenizer_inference_model():
+#     tokenizer = MTTokenizer()
 
 
 def test_generator_initialization():

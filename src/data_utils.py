@@ -1,9 +1,19 @@
+import json
+
 def _read_text_sentences(file_path: str) -> list:
     sentences = list()
     with open(file_path, "r") as input_file:
         for line in input_file:
             sentences.append(line.strip())
     return sentences
+
+def _get_metadata_languages_indexes(metadata_file_path: str, language_filter_str: str) -> list:
+    indexes = list()
+    with open(metadata_file_path, "r") as metadata_file:
+        for index, line in enumerate(metadata_file.readlines()):
+            if language_filter_str in line.strip():
+                indexes.append(index)
+    return indexes
 
 
 class SingleTokenizer:
@@ -12,7 +22,25 @@ class SingleTokenizer:
 
     def get_tokens_dictionary(self) -> dict:
         return self._tokens_dictionary
+    
+    def _split_sentence_in_words(self, sentence: str) -> list:
+        return [word.lower() for word in sentence.strip().split()]
+    
+    def save_tokens_dictionary(self, output_file_path: str):
+        with open(output_file_path, "w") as output_file:
+            json.dump(self._tokens_dictionary, output_file)
 
+    def train(self, file_path: str, metadata_path: str = "None", language_filter_str: str = '"src_lang": "da"') -> None:
+        self._tokens_dictionary["SOS"] = 0
+        sentences = _read_text_sentences(file_path)
+        if metadata_path != "None":
+            sentences = [sentences[index] for index in _get_metadata_languages_indexes(metadata_path, language_filter_str)]        
+        for sentence in sentences:
+            for word in self._split_sentence_in_words(sentence):
+                if word not in self._tokens_dictionary:
+                    self._tokens_dictionary[word] = len(self._tokens_dictionary)
+        self._tokens_dictionary["UNK"] = len(self._tokens_dictionary)
+        self._tokens_dictionary["EOS"] = len(self._tokens_dictionary)
 
 class MTTokenizer:
     def __init__(self):
