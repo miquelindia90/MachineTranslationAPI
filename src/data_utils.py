@@ -21,15 +21,17 @@ class DataIterator():
         language_indexes = list()
         languages = self._language_pair.split("-")        
         with open(self._metadata_path, 'r') as metadata_file:
-            for line in metadata_file:
+            for index, line in enumerate(metadata_file.readlines()):
                 sline = line.strip().split('"')
                 if sline[3] == languages[0] and sline[7] == languages[1]:
-                    language_indexes.append(sline[0])
+                    language_indexes.append(index)
         return language_indexes
 
     def __filter_lists_by_language(self, source_list: list, target_list: list) -> tuple:
         language_indexes = self.__extract_language_indexes()
-        return source_list, target_list
+        indexed_source_list = [source_list[index] for index in language_indexes]
+        indexed_target_list = [target_list[index] for index in language_indexes]
+        return indexed_source_list, indexed_target_list
 
     def __prepare_iterator_data(self):
         source_list = _read_text_sentences(self._source_path)
