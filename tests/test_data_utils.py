@@ -4,7 +4,8 @@ import sys
 
 sys.path.append("./src")
 
-from data_utils import DataIterator, SingleTokenizer, MTTokenizer
+from data_iterator import DataIterator
+from tokenizer import SingleTokenizer, MTTokenizer
 
 
 def test_SingleTokenizer_initialization():
