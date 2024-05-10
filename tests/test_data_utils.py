@@ -31,6 +31,10 @@ def test_SingleTokenizer_training_model():
 
 def test_SingleTokenizer_inference_model():
     tokenizer = SingleTokenizer()
+    tokenizer.load_tokens_dictionary("tests/examples/reference_tokens.json")
+    assert tokenizer.word_to_id("UNK") == 104452
+    assert tokenizer.word_to_id("SOS") == 0
+    assert tokenizer.sentence_to_id_list("Restauranter Asiatisk i Minto Road") == [88, 89, 64, 90, 91]
 
 
 def test_MTTokenizer_initialization():

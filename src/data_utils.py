@@ -53,6 +53,23 @@ class SingleTokenizer:
         with open(output_file_path, "w") as output_file:
             json.dump(self._tokens_dictionary, output_file, indent=4)
 
+    def load_tokens_dictionary(self, json_file_path: str):
+        with open(json_file_path, "r") as input_file:
+            self._tokens_dictionary = json.load(input_file)
+
+
+    def word_to_id(self, word: str) -> int:
+        if word in self._tokens_dictionary:
+            return self._tokens_dictionary[word]
+        else:
+            return self._tokens_dictionary["UNK"]
+        
+    def sentence_to_id_list(self, sentence: str) -> list:
+        return self._words_to_id_list(self._split_sentence_in_words(sentence))
+        
+    def _words_to_id_list(self, words: list) -> list:
+        return [self.word_to_id(word) for word in words]
+
     def train(
         self,
         file_path: str,
