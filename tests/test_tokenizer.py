@@ -18,7 +18,7 @@ def test_SingleTokenizer_training_model():
     )
     tokenizer_dictionary = tokenizer.get_tokens_dictionary()
     assert tokenizer_dictionary["SOS"] == 0
-    assert tokenizer_dictionary["UNK"] == 104452
+    assert tokenizer_dictionary["UNK"] == 1877
     tokenizer.save_tokens_dictionary("tests/examples/output_tokens.json")
     with open("tests/examples/reference_tokens.json", "r") as target_file, open(
         "tests/examples/output_tokens.json", "r"
@@ -32,7 +32,7 @@ def test_SingleTokenizer_training_model():
 def test_SingleTokenizer_inference_model():
     tokenizer = SingleTokenizer()
     tokenizer.load_tokens_dictionary("tests/examples/reference_tokens.json")
-    assert tokenizer.word_to_id("UNK") == 104452
+    assert tokenizer.word_to_id("UNK") == 1877
     assert tokenizer.word_to_id("SOS") == 0
     assert tokenizer.sentence_to_id_list("Restauranter Asiatisk i Minto Road") == [
         88,
