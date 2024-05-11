@@ -121,3 +121,27 @@ class MTTokenizer:
 
     def get_target_tokens_dictionary(self) -> dict:
         return self._target_dicitonary.get_tokens_dictionary()
+    
+    def save_tokens_dictionary(self, source_output_file_path: str, target_output_file_path: str) -> None:
+        self._source_tokenizer.save_tokens_dictionary(source_output_file_path)
+        self._target_dicitonary.save_tokens_dictionary(target_output_file_path)
+
+    def load_tokens_dictionary(self, source_file_path: str, target_file_path: str) -> None:
+        self._source_tokenizer.load_tokens_dictionary(source_file_path)
+        self._target_dicitonary.load_tokens_dictionary(target_file_path)
+
+    def source_lang_word_to_id(self, word: str) -> int:
+        return self._source_tokenizer.word_to_id(word)
+
+    def source_lang_sentence_to_id_list(self, sentence: str) -> list:
+        return self._source_tokenizer.sentence_to_id_list(sentence)
+    
+    def target_lang_word_to_id(self, word: str) -> int:
+        return self._target_dicitonary.word_to_id(word)
+    
+    def target_lang_sentence_to_id_list(self, sentence: str) -> list:
+        return self._target_dicitonary.sentence_to_id_list(sentence)
+    
+    def train(self, src_file_path: str, tgt_file_path: str, metadata_path: str = "None", language_filter_str: str = '"src_lang": "en", "tgt_lang": "sv"') -> None:
+        self._source_tokenizer.train(src_file_path, metadata_path, language_filter_str)
+        self._target_dicitonary.train(tgt_file_path, metadata_path, language_filter_str)
