@@ -1,7 +1,22 @@
+import re
 import json
 
 from data_utils import read_text_sentences, get_metadata_languages_indexes
 
+def split_alphanumeric(sentence: str):
+    """
+    Splits not alphanumeric characters from words in a sentence.
+
+    Args:
+        sentence (str): The input sentence to be split.
+
+    Returns:
+        str: The fixed sentence with alphabetical/non-alphabetical words separated by spaces.
+    """
+    new_words = []
+    for word in sentence.strip().split():
+        new_words += re.findall(r"([a-zA-Z]+|[^a-zA-Z])", word)
+    return ' '.join(new_words)
 
 class SingleTokenizer:
     """ Tokenizes sentences and maps words to unique IDs. """
@@ -12,7 +27,8 @@ class SingleTokenizer:
     def get_tokens_dictionary(self) -> dict:
         """ Returns the tokens dictionary. """
         return self._tokens_dictionary
-
+    
+    
     def _split_sentence_in_words(self, sentence: str) -> list:
         """ Splits a sentence into a list of lowercase words. """
         return [word.lower() for word in sentence.strip().split()]
