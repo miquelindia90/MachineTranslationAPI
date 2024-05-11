@@ -4,8 +4,16 @@ import json
 
 sys.path.append("./src")
 
-from tokenizer import SingleTokenizer, MTTokenizer
+from tokenizer import split_alphanumeric, SingleTokenizer, MTTokenizer
 
+def test_split_alphanumeric():
+    assert split_alphanumeric("Hello,") == "Hello ,"
+    assert split_alphanumeric("It's") == "It ' s"
+    assert split_alphanumeric("Hello! How you doing?") == "Hello ! How you doing ?"
+    assert split_alphanumeric("I have a couple of OCDs.") == "I have a couple of OCDs ."
+    assert split_alphanumeric("Mamman kallar en av tvillingarna 'den vackra'.") == "Mamman kallar en av tvillingarna ' den vackra ' ."  
+    
+    
 def test_SingleTokenizer_initialization():
     tokenizer = SingleTokenizer()
     assert tokenizer.get_tokens_dictionary() == dict()
