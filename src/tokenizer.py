@@ -13,9 +13,9 @@ def split_alphanumeric(sentence: str):
     Returns:
         str: The fixed sentence with alphabetical/non-alphabetical words separated by spaces.
     """
-    new_words = []
-    for word in sentence.strip().split():
-        new_words += re.findall(r"([a-zA-Z]+|[^a-zA-Z])", word)
+    # TO DO: Fix this regex, is a super truck of expressions.
+
+    new_words = re.split(r"(?<=\w)(?=[.,'\"*+\-%~·#¿?!])|(?<=[.,'\"*+\-%~·#¿?!])(?=\w)|(?<=[.,'\"*+\-%~·#¿?!])(?=[.,'\"*+\-%~·#¿?!])", sentence)
     return ' '.join(new_words)
 
 class SingleTokenizer:
@@ -31,7 +31,7 @@ class SingleTokenizer:
     
     def _split_sentence_in_words(self, sentence: str) -> list:
         """ Splits a sentence into a list of lowercase words. """
-        return [word.lower() for word in sentence.strip().split()]
+        return [word.lower() for word in split_alphanumeric(sentence).split()]
 
     def save_tokens_dictionary(self, output_file_path: str) -> None:
         """
