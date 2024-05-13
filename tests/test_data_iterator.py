@@ -47,9 +47,6 @@ def test_generator_initialization():
         )
     assert str(exc_info.value) == "tokenizer language pair must match the language pair filter"
     
-
-
-
 def test_generator_language_filtering():
     test_source_path = "tests/examples/test.src"
     test_target_path = "tests/examples/test.tgt"
@@ -68,6 +65,27 @@ def test_generator_language_filtering():
         tokenizer
         )
         assert len(data_iterator) == data_iterator_length
+
+
+def test_generator_iterator():
+
+    test_source_path = "tests/examples/test.src"
+    test_target_path = "tests/examples/test.tgt"
+    test_metadata_path = "tests/examples/test.metadata"
+    language_pair = '"src_lang": "en", "tgt_lang": "sv"'
+
+    tokenizer = MTTokenizer()
+    tokenizer.train(test_source_path, test_target_path, test_metadata_path, language_pair)
+    data_iterator = DataIterator(
+        test_source_path,
+        test_target_path,
+        test_metadata_path,
+        language_pair,
+        tokenizer
+    )
+
+    assert data_iterator.__getitem__(0)[0] == [1,2,3,4,5,6,7,5,8,9,10,11,12,13,14,15]
+    assert data_iterator.__getitem__(49)[1][:15] == [107,168,185,41,168,43,412,384,413,414,415,416,417,264,418]
 
 
 
