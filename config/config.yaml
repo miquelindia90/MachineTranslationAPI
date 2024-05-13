@@ -14,14 +14,12 @@ languages: "en-sv"
 language_filter_str: '"src_lang": "en", "tgt_lang": "sv"'
 output_directory: "models/en-sv-Transformer"
 
-# model_name: "CNN"
 requeue: False
 
 # Network Parameters
 
 model_dimension: 512
 number_of_heads: 8
-max_length: 1000
 hidden_dimension: 2048
 number_of_layers: 6
 drop_probability: 0.1
