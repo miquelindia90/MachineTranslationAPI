@@ -129,8 +129,12 @@ class SingleTokenizer:
 
 class MTTokenizer:
     def __init__(self):
+        self.language_pair = "None"
         self._source_tokenizer = SingleTokenizer()
         self._target_dicitonary = SingleTokenizer()
+
+    def get_language_pair(self) -> str:
+        return self.language_pair
 
     def get_source_tokens_dictionary(self) -> dict:
         return self._source_tokenizer.get_tokens_dictionary()
@@ -159,5 +163,6 @@ class MTTokenizer:
         return self._target_dicitonary.sentence_to_id_list(sentence)
     
     def train(self, src_file_path: str, tgt_file_path: str, metadata_path: str = "None", language_filter_str: str = '"src_lang": "en", "tgt_lang": "sv"') -> None:
+        self.language_pair = language_filter_str
         self._source_tokenizer.train(src_file_path, metadata_path, language_filter_str)
         self._target_dicitonary.train(tgt_file_path, metadata_path, language_filter_str)
