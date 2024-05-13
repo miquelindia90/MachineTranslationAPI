@@ -37,30 +37,47 @@ class Transformer(nn.Module):
 
     """
 
-    def __init__(self, source_padding_index: int, target_padding_index: int, target_sos_index: int, encoder_vocabulary_size: int, decoder_vocabulary_size: int, model_dimension: int, number_of_heads: int, max_length: int,
-                 hidden_dimension: int, number_of_layers: int, drop_probability: float = 0.1, device: torch.device = torch.device("cpu")):
+    def __init__(
+        self,
+        source_padding_index: int,
+        target_padding_index: int,
+        target_sos_index: int,
+        encoder_vocabulary_size: int,
+        decoder_vocabulary_size: int,
+        model_dimension: int,
+        number_of_heads: int,
+        max_length: int,
+        hidden_dimension: int,
+        number_of_layers: int,
+        drop_probability: float = 0.1,
+        device: torch.device = torch.device("cpu"),
+    ):
         super().__init__()
         self.source_padding_index = source_padding_index
         self.target_padding_index = target_padding_index
         self.target_sos_index = target_sos_index
         self.device = device
-        self.encoder = Encoder(model_dimension=model_dimension,
-                               number_of_heads=number_of_heads,
-                               max_length=max_length,
-                               hidden_dimension=hidden_dimension,
-                               encoder_vocabulary_size=encoder_vocabulary_size,
-                               drop_probability=drop_probability,
-                               number_of_layers=number_of_layers,
-                               device=device)
+        self.encoder = Encoder(
+            model_dimension=model_dimension,
+            number_of_heads=number_of_heads,
+            max_length=max_length,
+            hidden_dimension=hidden_dimension,
+            encoder_vocabulary_size=encoder_vocabulary_size,
+            drop_probability=drop_probability,
+            number_of_layers=number_of_layers,
+            device=device,
+        )
 
-        self.decoder = Decoder(model_dimension=model_dimension,
-                               number_of_heads=number_of_heads,
-                               max_length=max_length,
-                               hidden_dimension=hidden_dimension,
-                               decoder_vocabulary_size=decoder_vocabulary_size,
-                               drop_probability=drop_probability,
-                               number_of_layers=number_of_layers,
-                               device=device)
+        self.decoder = Decoder(
+            model_dimension=model_dimension,
+            number_of_heads=number_of_heads,
+            max_length=max_length,
+            hidden_dimension=hidden_dimension,
+            decoder_vocabulary_size=decoder_vocabulary_size,
+            drop_probability=drop_probability,
+            number_of_layers=number_of_layers,
+            device=device,
+        )
 
     def forward(self, source: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
         """
@@ -105,8 +122,14 @@ class Transformer(nn.Module):
             torch.Tensor: Target mask tensor of shape (batch_size, 1, target_length, target_length).
 
         """
-        target_padding_mask = (target != self.target_padding_index).unsqueeze(1).unsqueeze(3)
+        target_padding_mask = (
+            (target != self.target_padding_index).unsqueeze(1).unsqueeze(3)
+        )
         target_length = target.shape[1]
-        target_sub_mask = torch.tril(torch.ones(target_length, target_length)).type(torch.ByteTensor).to(self.device)
+        target_sub_mask = (
+            torch.tril(torch.ones(target_length, target_length))
+            .type(torch.ByteTensor)
+            .to(self.device)
+        )
         target_mask = target_padding_mask & target_sub_mask
         return target_mask

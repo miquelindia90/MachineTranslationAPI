@@ -72,6 +72,7 @@ def test_decoder_forward_pass():
     output = decoder(target_tensor, encoder_source_tensor, None, None)
     assert output.shape == (10, 30, 200)
 
+
 def test_transformer_parameter_count():
 
     transformer = Transformer(
@@ -89,6 +90,7 @@ def test_transformer_parameter_count():
 
     total_params = sum(p.numel() for p in transformer.parameters())
     assert total_params == 2866376
+
 
 def test_transformer_forward_pass():
 
