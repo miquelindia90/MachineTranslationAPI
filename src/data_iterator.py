@@ -61,4 +61,6 @@ class DataIterator:
         return len(self._tokenized_source_list)
 
     def __getitem__(self, index):
-        return self._tokenized_source_list[index], self._tokenized_target_list[index]
+        source_item_list = [self._tokenizer.source_lang_word_to_id("SOS")] + self._tokenized_source_list[index] + [self._tokenizer.source_lang_word_to_id("EOS")]
+        target_item_list = [self._tokenizer.target_lang_word_to_id("SOS")] + self._tokenized_target_list[index] + [self._tokenizer.target_lang_word_to_id("EOS")]
+        return source_item_list, target_item_list
