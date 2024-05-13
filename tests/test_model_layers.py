@@ -20,17 +20,18 @@ def test_layer_norm_forward():
     # TO DO: Add more tests to check the correctness of the LayerNorm module. Add tests to check the variance of the output tensor.
 
 def test_scale_dot_product_attention_forward():
-    hidden_tensor_dimension = 10
+    
     batch_size = 5
-    sequence_length = 4
+    number_of_heads = 8
+    sequence_length = 30
+    hidden_tensor_dimension = 10
 
-    torch.manual_seed(0)
-    query = torch.randn(batch_size, sequence_length, 1, hidden_tensor_dimension)
-    key = torch.randn(batch_size, sequence_length, 1, hidden_tensor_dimension)
-    value = torch.randn(batch_size, sequence_length, 1, hidden_tensor_dimension)
+    query = torch.randn(batch_size, number_of_heads, sequence_length, hidden_tensor_dimension)
+    key = torch.randn(batch_size, number_of_heads, sequence_length, hidden_tensor_dimension)
+    value = torch.randn(batch_size, number_of_heads, sequence_length,  hidden_tensor_dimension)
 
     scale_dot_product_attention = ScaleDotProductAttention()
     output_tensor, attention_scores = scale_dot_product_attention(query, key, value)
-    assert output_tensor.shape == (batch_size, sequence_length, 1, hidden_tensor_dimension)
-    assert attention_scores.shape == (batch_size, sequence_length, 1, 1)
-    # TO DO: Add more tests to check the correctness of the ScaleDotProductAttention module. Add tests to check the attention scores and the attention output tensor.
+    assert output_tensor.shape == (batch_size, number_of_heads, sequence_length, hidden_tensor_dimension)
+    assert attention_scores.shape == (batch_size, number_of_heads, sequence_length, sequence_length)
+    # TO DO: Add more tests to check the correctness of the ScaleDotProductAttention module. Add tests to check the attention scores and the output tensor.
