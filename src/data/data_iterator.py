@@ -2,6 +2,21 @@ from data.data_utils import read_text_sentences, get_metadata_languages_indexes
 from data.tokenizer import MTTokenizer
 
 class DataIterator:
+    """
+    A class that represents a data iterator for machine translation.
+
+    Args:
+        source_path (str): The path to the source data file.
+        target_path (str): The path to the target data file.
+        metadata_path (str): The path to the metadata file.
+        language_pair_filter (str, optional): The language pair filter. Defaults to "None".
+        tokenizer (MTTokenizer, optional): The tokenizer object. Defaults to MTTokenizer().
+
+    Raises:
+        ValueError: If the tokenizer is not an instance of MTTokenizer.
+        Exception: If the tokenizer is not trained or if the tokenizer language pair does not match the language pair filter.
+    """
+
     def __init__(
         self,
         source_path: str,
@@ -18,7 +33,14 @@ class DataIterator:
         self._validate_tokenizer()
         self._tokenized_source_list, self._tokenized_target_list = self.__prepare_iterator_data()
 
-    def _validate_tokenizer(self):
+    def _validate_tokenizer(self) -> None:
+        """
+        Validates the tokenizer object.
+
+        Raises:
+            ValueError: If the tokenizer is not an instance of MTTokenizer.
+            Exception: If the tokenizer is not trained or if the tokenizer language pair does not match the language pair filter.
+        """
         if not isinstance(self._tokenizer, MTTokenizer):
             raise ValueError("tokenizer must be an instance of MTTokenizer")
         elif self._tokenizer.get_source_tokens_dictionary() == dict() or self._tokenizer.get_target_tokens_dictionary() == dict():
@@ -28,6 +50,16 @@ class DataIterator:
         
 
     def __filter_lists_by_language(self, source_list: list, target_list: list) -> tuple:
+        """
+        Filters the source and target lists based on the language pair filter.
+
+        Args:
+            source_list (list): The source list of sentences.
+            target_list (list): The target list of sentences.
+
+        Returns:
+            tuple: A tuple containing the filtered source list and target list.
+        """
         language_indexes = get_metadata_languages_indexes(
             self._metadata_path, self._language_pair_filter
         )
@@ -36,6 +68,16 @@ class DataIterator:
         return indexed_source_list, indexed_target_list
     
     def _tokenize_data_sentences(self, source_list: list, target_list: list) -> tuple:
+        """
+        Tokenizes the source and target sentences.
+
+        Args:
+            source_list (list): The source list of sentences.
+            target_list (list): The target list of sentences.
+
+        Returns:
+            tuple: A tuple containing the tokenized source list and target list.
+        """
         tokenized_source_list = [
             self._tokenizer.source_lang_sentence_to_id_list(sentence)
             for sentence in source_list
@@ -46,7 +88,13 @@ class DataIterator:
         ]
         return tokenized_source_list, tokenized_target_list
 
-    def __prepare_iterator_data(self):
+    def __prepare_iterator_data(self) -> tuple:
+        """
+        Prepares the data for the iterator.
+
+        Returns:
+            tuple: A tuple containing the tokenized source list and target list.
+        """
         source_list = read_text_sentences(self._source_path)
         target_list = read_text_sentences(self._target_path)
         if self._language_pair_filter != "None":
@@ -62,7 +110,7 @@ class DataIterator:
     def __len__(self):
         return len(self._tokenized_source_list)
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: int) -> tuple :
         source_item_list = [self._tokenizer.source_lang_word_to_id("SOS")] + self._tokenized_source_list[index] + [self._tokenizer.source_lang_word_to_id("EOS")]
         target_item_list = [self._tokenizer.target_lang_word_to_id("SOS")] + self._tokenized_target_list[index] + [self._tokenizer.target_lang_word_to_id("EOS")]
         padded_source_item_list = source_item_list + [self._tokenizer.source_lang_word_to_id("EOS")] * (self._max_source_length - len(source_item_list))
