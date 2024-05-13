@@ -1,49 +1,42 @@
-# # I/O Parameters
+# I/O Parameters
 
-# train_data_dir: "/scratch/speaker_databases/VoxCeleb-2/dev"
-# valid_data_dir: "/scratch/speaker_databases/VoxSRC2023/dev"
-# train_labels_path: "labels/sc_labels.ndx"
-# valid_clients: "labels/2023_val_clients.ndx"
-# valid_impostors: "labels/2023_val_impostors.ndx"
+train_src_path: "data/train.src"
+train_tgt_path: "data/train.tgt" 
+train_metadata_path: "data/train.metadata"
+valid_src_path: "data/valid.src"
+valid_tgt_path: "data/valid.tgt"
+valid_metadata_path: "data/valid.metadata"
+test_src_path: "data/test.src"
+test_tgt_path: "data/test.tgt"
+test_metadata_path: "data/test.metadata"
+
+languages: "en-sv"
+language_filter_str: '"src_lang": "en", "tgt_lang": "sv"'
 output_directory: "models/en-sv-Transformer"
+
 # model_name: "CNN"
-# requeue: False
+requeue: False
 
-# # Augmentation Parameters
+# Network Parameters
 
-# augmentation_data_dir: "/scratch/speaker_databases/musan"
-# rirs_data_dir: "/scratch/speaker_databases/RIRS_NOISES"
-# augmentation_labels_path: "labels/musan_labels.lst"
-# rirs_labels_path: "labels/rirs.lst"
-# augmentation_prob: 0.75 # Probability of applying augmentation to a sample. 0 means no augmentation.
+model_dimension: 512
+number_of_heads: 8
+max_length: 1000
+hidden_dimension: 2048
+number_of_layers: 6
+drop_probability: 0.1
 
-# # Network Parameters
+# Optimization
 
-# front_end: "ResNet34"
-# window_size: 3.5
-# kernel_size: 256
-# embedding_size: 400
-# heads_number: 16
-# pooling_method: "Attention"
-# mask_prob: 0.25
+learning_rate: 0.1
+factor: 0.9
+patience: 10
+weight_decay: 0.0005
+batch_size: 128
+gradientAccumulation: 1
+max_epochs: 1000
+early_stopping: 15
+num_workers: 4
 
-# # AMSoftmax Config
-
-# scalingFactor: 30.0
-# marginFactor: 0.4
-
-# # Optimization
-
-# optimizer: "Adam"
-# learning_rate: 0.0001
-# weight_decay: 0.001
-# batch_size: 128
-# gradientAccumulation: 1
-# max_epochs: 500
-# early_stopping: 25
-# num_workers: 4
-# scheduler_lr_epochs: 5
-# scheduler_lr_gamma: 0.5
-
-# # Logging
-# print_metric_window: 1000
+# Logging
+print_metric_window: 1000
