@@ -2,3 +2,4 @@ tox
 torch
 matplotlib
 flask
+pyyaml
