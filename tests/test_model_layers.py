@@ -7,6 +7,7 @@ sys.path.append("./src")
 from models.layers.layer_norm import LayerNorm
 from models.layers.scale_dot_product_attention import ScaleDotProductAttention
 from models.layers.multi_head_attention import MultiHeadAttention
+from models.layers.position_wise_feed_forward import PositionwiseFeedForward
 
 
 def test_layer_norm_forward():
@@ -71,4 +72,17 @@ def test_multi_head_attention_forward():
     multi_head_attention = MultiHeadAttention(hidden_tensor_dimension, number_of_heads)
     output_tensor = multi_head_attention(query, key, value)
     assert output_tensor.shape == (batch_size, sequence_length, hidden_tensor_dimension)
-    # TO DO: Add more tests to check the correctness of the MultiHeadAttention module. Add tests to check the output tensor.
+
+
+def test_positionwise_feed_forward_forward():
+    batch_size = 5
+    sequence_length = 30
+    model_dimension = 32
+    hidden_dimension = 64
+
+    input_tensor = torch.randn(batch_size, sequence_length, model_dimension)
+    positionwise_feed_forward = PositionwiseFeedForward(
+        model_dimension, hidden_dimension
+    )
+    output_tensor = positionwise_feed_forward(input_tensor)
+    assert output_tensor.shape == (batch_size, sequence_length, model_dimension)
