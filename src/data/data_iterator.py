@@ -1,5 +1,5 @@
-from data_utils import read_text_sentences, get_metadata_languages_indexes
-from tokenizer import MTTokenizer
+from data.data_utils import read_text_sentences, get_metadata_languages_indexes
+from data.tokenizer import MTTokenizer
 
 class DataIterator:
     def __init__(

@@ -1,7 +1,7 @@
 import re
 import json
 
-from data_utils import read_text_sentences, get_metadata_languages_indexes
+from data.data_utils import read_text_sentences, get_metadata_languages_indexes
 
 def split_alphanumeric(sentence: str):
     """
@@ -128,41 +128,109 @@ class SingleTokenizer:
 
 
 class MTTokenizer:
+    """
+    The MTTokenizer class is responsible for tokenizing source and target language sentences,
+    creating and managing tokens dictionaries, and providing methods for converting words and sentences
+    to their corresponding token IDs.
+    """
+
     def __init__(self):
         self.language_pair = "None"
         self._source_tokenizer = SingleTokenizer()
         self._target_dicitonary = SingleTokenizer()
 
     def get_language_pair(self) -> str:
+        """Get the language pair used for tokenization."""
         return self.language_pair
 
     def get_source_tokens_dictionary(self) -> dict:
+        """Get the tokens dictionary for the source language."""
         return self._source_tokenizer.get_tokens_dictionary()
 
     def get_target_tokens_dictionary(self) -> dict:
+        """Get the tokens dictionary for the target language."""
         return self._target_dicitonary.get_tokens_dictionary()
     
     def save_tokens_dictionary(self, source_output_file_path: str, target_output_file_path: str) -> None:
+        """
+        Save the tokens dictionaries to the specified output file paths.
+
+        Args:
+            source_output_file_path (str): The file path to save the source tokens dictionary.
+            target_output_file_path (str): The file path to save the target tokens dictionary.
+        """
         self._source_tokenizer.save_tokens_dictionary(source_output_file_path)
         self._target_dicitonary.save_tokens_dictionary(target_output_file_path)
 
     def load_tokens_dictionary(self, source_file_path: str, target_file_path: str) -> None:
+        """
+        Load the tokens dictionaries from the specified file paths.
+
+        Args:
+            source_file_path (str): The file path to load the source tokens dictionary from.
+            target_file_path (str): The file path to load the target tokens dictionary from.
+        """
         self._source_tokenizer.load_tokens_dictionary(source_file_path)
         self._target_dicitonary.load_tokens_dictionary(target_file_path)
 
     def source_lang_word_to_id(self, word: str) -> int:
+        """
+        Convert a word in the source language to its corresponding token ID.
+
+        Args:
+            word (str): The word to convert.
+
+        Returns:
+            int: The token ID of the word.
+        """
         return self._source_tokenizer.word_to_id(word)
 
     def source_lang_sentence_to_id_list(self, sentence: str) -> list:
+        """
+        Convert a sentence in the source language to a list of token IDs.
+
+        Args:
+            sentence (str): The sentence to convert.
+
+        Returns:
+            list: A list of token IDs representing the sentence.
+        """
         return self._source_tokenizer.sentence_to_id_list(sentence)
     
     def target_lang_word_to_id(self, word: str) -> int:
+        """
+        Convert a word in the target language to its corresponding token ID.
+
+        Args:
+            word (str): The word to convert.
+
+        Returns:
+            int: The token ID of the word.
+        """
         return self._target_dicitonary.word_to_id(word)
     
     def target_lang_sentence_to_id_list(self, sentence: str) -> list:
+        """
+        Convert a sentence in the target language to a list of token IDs.
+
+        Args:
+            sentence (str): The sentence to convert.
+
+        Returns:
+            list: A list of token IDs representing the sentence.
+        """
         return self._target_dicitonary.sentence_to_id_list(sentence)
     
     def train(self, src_file_path: str, tgt_file_path: str, metadata_path: str = "None", language_filter_str: str = '"src_lang": "en", "tgt_lang": "sv"') -> None:
+        """
+        Train the tokenizer using the specified source and target language files.
+
+        Args:
+            src_file_path (str): The file path of the source language file.
+            tgt_file_path (str): The file path of the target language file.
+            metadata_path (str, optional): The file path of the metadata file. Defaults to "None".
+            language_filter_str (str, optional): The language filter string. Defaults to '"src_lang": "en", "tgt_lang": "sv"'.
+        """
         self.language_pair = language_filter_str
         self._source_tokenizer.train(src_file_path, metadata_path, language_filter_str)
         self._target_dicitonary.train(tgt_file_path, metadata_path, language_filter_str)
