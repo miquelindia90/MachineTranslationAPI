@@ -9,6 +9,7 @@ from models.layers.scale_dot_product_attention import ScaleDotProductAttention
 from models.layers.multi_head_attention import MultiHeadAttention
 from models.layers.position_wise_feed_forward import PositionwiseFeedForward
 from models.layers.encoder_layer import EncoderLayer
+from models.layers.decoder_layer import DecoderLayer
 
 
 def test_layer_norm_forward():
@@ -103,3 +104,19 @@ def test_encoder_layer_forward():
 
     assert output_tensor.shape == (batch_size, sequence_length, model_dimension)
     # TO DO: Add more tests to check the correctness of the EncoderLayer module. Add tests to chech the src_mask argument.
+
+
+def test_decoder_layer_forward():
+    batch_size = 5
+    sequence_length = 30
+    model_dimension = 32
+    hidden_dimension = 64
+    number_of_heads = 8
+
+    x = torch.randn(batch_size, sequence_length, model_dimension)
+    encoder_output = torch.randn(batch_size, sequence_length, model_dimension)
+
+    decoder_layer = DecoderLayer(model_dimension, hidden_dimension, number_of_heads)
+    output_tensor = decoder_layer(x, encoder_output, None, None)
+
+    assert output_tensor.shape == (batch_size, sequence_length, model_dimension)
