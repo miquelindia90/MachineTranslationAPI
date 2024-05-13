@@ -84,9 +84,16 @@ def test_generator_sampling():
         tokenizer
     )
 
-    assert data_iterator.__getitem__(0)[0] == [0,1,2,3,4,5,6,7,5,8,9,10,11,12,13,14,15,658]
+    for index in range(len(data_iterator)):
+        assert len(data_iterator.__getitem__(index)[0]) == 73
+        assert len(data_iterator.__getitem__(index)[2]) == 58
+
+    assert data_iterator.__getitem__(0)[0][0:18] == [0,1,2,3,4,5,6,7,5,8,9,10,11,12,13,14,15,658]
+    assert data_iterator.__getitem__(0)[0][19:] == [658]*54
     assert data_iterator.__getitem__(0)[1] == [18]
+
     assert data_iterator.__getitem__(49)[2][:16] == [0,107,168,185,41,168,43,412,384,413,414,415,416,417,264,418]
+    assert data_iterator.__getitem__(49)[2][36:] == [666]*22
     assert data_iterator.__getitem__(49)[3] == [36]
 
 
