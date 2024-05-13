@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 sys.path.append("./src")
 
 from models.embeddings.positional_encoding import PositionalEncoding
+from models.embeddings.transformer_embedding import TransformerEmbedding
 
 def test_positional_encoding_shape():
     positional_encoding = PositionalEncoding(model_dimension=512, max_length=100)
@@ -36,4 +37,18 @@ def test_positional_encoding_non_trainable():
     input_tensor = torch.zeros((64, 100))
     output = positional_encoding(input_tensor)
     assert not output.requires_grad
+
+def test_transformer_embedding_shape():
+    transformer_embedding = TransformerEmbedding(vocablulary_size=150, model_dimension=512, max_length=100, drop_probability=0.1, device=torch.device("cpu"))
+    input_tensor = torch.zeros((64, 50)).long()
+    output = transformer_embedding(input_tensor)
+    assert output.shape == (64, 50, 512)
+
+def test_transformer_embedding_values():
+    torch.manual_seed(0)
+    transformer_embedding = TransformerEmbedding(vocablulary_size=150, model_dimension=512, max_length=100, drop_probability=0., device=torch.device("cpu"))
+    input_tensor = torch.zeros((64, 50)).long()
+    output = transformer_embedding(input_tensor)
+    assert round(output[25, 3, 2].item(), 4) == -0.0055
+    assert round(output[30, 2, 5].item(), 4) == 0.4057
 
