@@ -138,10 +138,10 @@ class DataIterator(torch.utils.data.Dataset):
             + [self._tokenizer.target_lang_word_to_id("EOS")]
         )
         padded_source_item_list = source_item_list + [
-            self._tokenizer.source_lang_word_to_id("EOS")
+            self._tokenizer.source_lang_word_to_id("PAD")
         ] * (self._max_source_length - len(source_item_list))
         padded_target_item_list = target_item_list + [
-            self._tokenizer.target_lang_word_to_id("EOS")
+            self._tokenizer.target_lang_word_to_id("PAD")
         ] * (self._max_target_length - len(target_item_list))
         return (
             padded_source_item_list,
