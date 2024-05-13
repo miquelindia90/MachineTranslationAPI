@@ -3,6 +3,7 @@ import json
 
 from data.data_utils import read_text_sentences, get_metadata_languages_indexes
 
+
 def split_alphanumeric(sentence: str):
     """
     Splits not alphanumeric characters from words in a sentence.
@@ -15,22 +16,25 @@ def split_alphanumeric(sentence: str):
     """
     # TO DO: Fix this regex, is a super truck of expressions.
 
-    new_words = re.split(r"(?<=\w)(?=[.,'\"*+\-%~·#¿?!])|(?<=[.,'\"*+\-%~·#¿?!])(?=\w)|(?<=[.,'\"*+\-%~·#¿?!])(?=[.,'\"*+\-%~·#¿?!])", sentence)
-    return ' '.join(new_words)
+    new_words = re.split(
+        r"(?<=\w)(?=[.,'\"*+\-%~·#¿?!])|(?<=[.,'\"*+\-%~·#¿?!])(?=\w)|(?<=[.,'\"*+\-%~·#¿?!])(?=[.,'\"*+\-%~·#¿?!])",
+        sentence,
+    )
+    return " ".join(new_words)
+
 
 class SingleTokenizer:
-    """ Tokenizes sentences and maps words to unique IDs. """
+    """Tokenizes sentences and maps words to unique IDs."""
 
     def __init__(self):
         self._tokens_dictionary = dict()
 
     def get_tokens_dictionary(self) -> dict:
-        """ Returns the tokens dictionary. """
+        """Returns the tokens dictionary."""
         return self._tokens_dictionary
-    
-    
+
     def _split_sentence_in_words(self, sentence: str) -> list:
-        """ Splits a sentence into a list of lowercase words. """
+        """Splits a sentence into a list of lowercase words."""
         return [word.lower() for word in split_alphanumeric(sentence).split()]
 
     def save_tokens_dictionary(self, output_file_path: str) -> None:
@@ -150,8 +154,10 @@ class MTTokenizer:
     def get_target_tokens_dictionary(self) -> dict:
         """Get the tokens dictionary for the target language."""
         return self._target_dicitonary.get_tokens_dictionary()
-    
-    def save_tokens_dictionary(self, source_output_file_path: str, target_output_file_path: str) -> None:
+
+    def save_tokens_dictionary(
+        self, source_output_file_path: str, target_output_file_path: str
+    ) -> None:
         """
         Save the tokens dictionaries to the specified output file paths.
 
@@ -162,7 +168,9 @@ class MTTokenizer:
         self._source_tokenizer.save_tokens_dictionary(source_output_file_path)
         self._target_dicitonary.save_tokens_dictionary(target_output_file_path)
 
-    def load_tokens_dictionary(self, source_file_path: str, target_file_path: str) -> None:
+    def load_tokens_dictionary(
+        self, source_file_path: str, target_file_path: str
+    ) -> None:
         """
         Load the tokens dictionaries from the specified file paths.
 
@@ -196,7 +204,7 @@ class MTTokenizer:
             list: A list of token IDs representing the sentence.
         """
         return self._source_tokenizer.sentence_to_id_list(sentence)
-    
+
     def target_lang_word_to_id(self, word: str) -> int:
         """
         Convert a word in the target language to its corresponding token ID.
@@ -208,7 +216,7 @@ class MTTokenizer:
             int: The token ID of the word.
         """
         return self._target_dicitonary.word_to_id(word)
-    
+
     def target_lang_sentence_to_id_list(self, sentence: str) -> list:
         """
         Convert a sentence in the target language to a list of token IDs.
@@ -220,8 +228,14 @@ class MTTokenizer:
             list: A list of token IDs representing the sentence.
         """
         return self._target_dicitonary.sentence_to_id_list(sentence)
-    
-    def train(self, src_file_path: str, tgt_file_path: str, metadata_path: str = "None", language_filter_str: str = '"src_lang": "en", "tgt_lang": "sv"') -> None:
+
+    def train(
+        self,
+        src_file_path: str,
+        tgt_file_path: str,
+        metadata_path: str = "None",
+        language_filter_str: str = '"src_lang": "en", "tgt_lang": "sv"',
+    ) -> None:
         """
         Train the tokenizer using the specified source and target language files.
 

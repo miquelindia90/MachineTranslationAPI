@@ -5,15 +5,24 @@ sys.path.append("./src")
 from data.data_utils import read_text_sentences, get_metadata_languages_indexes
 
 
-
 def test_read_text_sentences():
-    
+
     file_path = "tests/examples/test.src"
     sentences = read_text_sentences(file_path)
     assert len(sentences) == 1000
-    assert sentences[0] == "And it is also the case with the new national-conservative populism of today."
-    assert sentences[1] == "Selv om du bruker en søkemotor, må du sørge for at den fører deg til det virkelige nettstedet."
-    assert sentences[2] == "The links are maintained by their respective organisations, which are solely responsible for their content."
+    assert (
+        sentences[0]
+        == "And it is also the case with the new national-conservative populism of today."
+    )
+    assert (
+        sentences[1]
+        == "Selv om du bruker en søkemotor, må du sørge for at den fører deg til det virkelige nettstedet."
+    )
+    assert (
+        sentences[2]
+        == "The links are maintained by their respective organisations, which are solely responsible for their content."
+    )
+
 
 def test_get_metadata_languages_indexes():
 
