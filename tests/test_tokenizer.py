@@ -4,7 +4,7 @@ import json
 
 sys.path.append("./src")
 
-from tokenizer import split_alphanumeric, SingleTokenizer, MTTokenizer
+from data.tokenizer import split_alphanumeric, SingleTokenizer, MTTokenizer
 
 def test_split_alphanumeric():
     assert split_alphanumeric("Hello,") == "Hello ,"

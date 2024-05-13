@@ -3,8 +3,8 @@ import pytest
 
 sys.path.append("./src")
 
-from data_iterator import DataIterator
-from tokenizer import MTTokenizer
+from data.data_iterator import DataIterator
+from data.tokenizer import MTTokenizer
 
 def test_generator_initialization():
     test_source_path = "tests/examples/test.src"

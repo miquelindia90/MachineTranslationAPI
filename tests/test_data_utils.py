@@ -2,7 +2,7 @@ import sys
 
 sys.path.append("./src")
 
-from data_utils import read_text_sentences, get_metadata_languages_indexes
+from data.data_utils import read_text_sentences, get_metadata_languages_indexes
 
 
 
