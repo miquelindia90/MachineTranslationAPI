@@ -5,15 +5,20 @@ import time
 
 
 import torch
-import torch.nn as nn
-from torch.nn import functional as F
-from torch import optim
+
+# import torch.nn as nn
+# from torch.nn import functional as F
+# from torch import optim
 from torch.utils.data import DataLoader
+
 # import numpy as np
 # from tqdm import tqdm
 
-# sys.path.append("./src")
-# from data import Dataset, feature_extractor
+sys.path.append("./src")
+from data.tokenizer import MTTokenizer
+from data.data_iterator import DataIterator
+from models.transformer import Transformer
+
 # from model import SpeakerClassifier
 # from loss import *
 # from utils import *
@@ -23,8 +28,8 @@ class Trainer:
     def __init__(self, params, device):
         self.params = params
         self.device = device
-        # self.__load_network()
-        # self.__load_data()
+        self.__load_data()
+        self.__load_network()
         # self.__load_optimizer()
         # self.__load_criterion()
         # self.__initialize_training_variables()
@@ -57,28 +62,72 @@ class Trainer:
     #     self.best_EER = 50.0
     #     self.stopping = 0.0
 
-    # def __load_network(self):
-    #     self.net = SpeakerClassifier(self.params, self.device)
-    #     self.net.to(self.device)
+    def __load_network(self):
+        self.net = Transformer(
+            source_padding_index=self.tokenizer.source_lang_word_to_id("PAD"),
+            target_padding_index=self.tokenizer.target_lang_word_to_id("PAD"),
+            target_sos_index=self.tokenizer.target_lang_word_to_id("SOS"),
+            encoder_vocabulary_size=len(self.tokenizer.get_source_tokens_dictionary()),
+            decoder_vocabulary_size=len(self.tokenizer.get_target_tokens_dictionary()),
+            model_dimension=self.params["model_dimension"],
+            number_of_heads=self.params["number_of_heads"],
+            max_length=self.params["max_length"],
+            hidden_dimension=self.params["hidden_dimension"],
+            number_of_layers=self.params["number_of_layers"],
+            drop_probability=self.params["drop_probability"],
+            device=self.device,
+        )
 
-    #     if torch.cuda.device_count() > 1:
-    #         print("Let's use", torch.cuda.device_count(), "GPUs!")
-    #         self.net = nn.DataParallel(self.net)
+        if torch.cuda.device_count() > 1:
+            print("Let's use", torch.cuda.device_count(), "GPUs!")
+            self.net = nn.DataParallel(self.net)
 
-    # def __load_data(self):
-    #     print("Loading Data and Labels")
-    #     with open(self.params["train_labels_path"], "r") as data_labels_file:
-    #         train_labels = data_labels_file.readlines()
-
-    #     data_loader_parameters = {
-    #         "batch_size": self.params["batch_size"],
-    #         "shuffle": True,
-    #         "drop_last": True,
-    #         "num_workers": self.params["num_workers"],
-    #     }
-    #     self.training_generator = DataLoader(
-    #         Dataset(train_labels, self.params), **data_loader_parameters
-    #     )
+    def __load_data(self):
+        print("Loading Data for Training")
+        self.tokenizer = MTTokenizer()
+        self.tokenizer.train(
+            self.params["train_src_path"],
+            self.params["train_tgt_path"],
+            self.params["train_metadata_path"],
+            self.params["language_filter_str"],
+        )
+        data_loader_parameters = {
+            "batch_size": self.params["batch_size"],
+            "shuffle": True,
+            "drop_last": True,
+            "num_workers": self.params["num_workers"],
+        }
+        train_data_iterator = DataIterator(
+            self.params["train_src_path"],
+            self.params["train_tgt_path"],
+            self.params["train_metadata_path"],
+            self.params["language_filter_str"],
+            self.tokenizer,
+        )
+        self.params["max_length"] = train_data_iterator.max_source_length
+        self.training_generator = DataLoader(
+            train_data_iterator, **data_loader_parameters
+        )
+        self.validation_generator = DataLoader(
+            DataIterator(
+                self.params["valid_src_path"],
+                self.params["valid_tgt_path"],
+                self.params["valid_metadata_path"],
+                self.params["language_filter_str"],
+                self.tokenizer,
+            ),
+            **data_loader_parameters
+        )
+        self.test_generator = DataLoader(
+            DataIterator(
+                self.params["test_src_path"],
+                self.params["test_tgt_path"],
+                self.params["test_metadata_path"],
+                self.params["language_filter_str"],
+                self.tokenizer,
+            ),
+            **data_loader_parameters
+        )
 
     # def __load_optimizer(self):
     #     self.optimizer = optim.Adam(
@@ -234,7 +283,7 @@ def main(params):
 
     print("Loading Trainer")
     trainer = Trainer(params, device)
-    trainer.train()
+    # trainer.train()
 
 
 if __name__ == "__main__":
