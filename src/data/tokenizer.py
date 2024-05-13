@@ -129,6 +129,7 @@ class SingleTokenizer:
                     self._tokens_dictionary[word] = len(self._tokens_dictionary)
         self._tokens_dictionary["UNK"] = len(self._tokens_dictionary)
         self._tokens_dictionary["EOS"] = len(self._tokens_dictionary)
+        self._tokens_dictionary["PAD"] = len(self._tokens_dictionary)
 
 
 class MTTokenizer:
