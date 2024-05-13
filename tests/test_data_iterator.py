@@ -67,7 +67,7 @@ def test_generator_language_filtering():
         assert len(data_iterator) == data_iterator_length
 
 
-def test_generator_iterator():
+def test_generator_sampling():
 
     test_source_path = "tests/examples/test.src"
     test_target_path = "tests/examples/test.tgt"
