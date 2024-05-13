@@ -14,7 +14,14 @@ class ScaleDotProductAttention(nn.Module):
         super(ScaleDotProductAttention, self).__init__()
         self.softmax = nn.Softmax(dim=-1)
 
-    def forward(self, query: torch.tensor, key: torch.tensor, value: torch.tensor, mask: torch.tensor=None, epsilon: float=1e-12) -> tuple:
+    def forward(
+        self,
+        query: torch.tensor,
+        key: torch.tensor,
+        value: torch.tensor,
+        mask: torch.tensor = None,
+        epsilon: float = 1e-12,
+    ) -> tuple:
         """
         Forward pass of the ScaleDotProductAttention module.
 

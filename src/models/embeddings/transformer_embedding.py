@@ -25,10 +25,19 @@ class TransformerEmbedding(nn.Module):
         drop_probability (float): The probability of an element to be zeroed in the dropout layer.
     """
 
-    def __init__(self, vocablulary_size: int, model_dimension: int, max_length: int, drop_probability: float, device: torch.device):
+    def __init__(
+        self,
+        vocablulary_size: int,
+        model_dimension: int,
+        max_length: int,
+        drop_probability: float,
+        device: torch.device,
+    ):
         super(TransformerEmbedding, self).__init__()
         self.token_embedding = TokenEmbedding(vocablulary_size, model_dimension)
-        self.position_embedding = PositionalEncoding(model_dimension, max_length, device)
+        self.position_embedding = PositionalEncoding(
+            model_dimension, max_length, device
+        )
         self.drop_out = nn.Dropout(p=drop_probability)
         self.drop_probability = drop_probability
 
@@ -44,7 +53,7 @@ class TransformerEmbedding(nn.Module):
         """
         token_embedding = self.token_embedding(x)
         position_embedding = self.position_embedding(x)
-        if self.drop_probability > 0.:
+        if self.drop_probability > 0.0:
             return self.drop_out(token_embedding + position_embedding)
         else:
             return token_embedding + position_embedding

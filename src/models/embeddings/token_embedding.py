@@ -11,4 +11,6 @@ class TokenEmbedding(nn.Embedding):
     """
 
     def __init__(self, vocablulary_size: int, model_dimension: int):
-        super(TokenEmbedding, self).__init__(vocablulary_size, model_dimension, padding_idx=1)
+        super(TokenEmbedding, self).__init__(
+            vocablulary_size, model_dimension, padding_idx=1
+        )

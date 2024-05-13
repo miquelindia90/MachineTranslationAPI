@@ -15,9 +15,14 @@ class PositionalEncoding(nn.Module):
         encoding (torch.Tensor): The positional encoding tensor of shape (max_length, model_dimension).
     """
 
-    def __init__(self, model_dimension: int, max_length: int, device: torch.device=torch.device("cpu")):
+    def __init__(
+        self,
+        model_dimension: int,
+        max_length: int,
+        device: torch.device = torch.device("cpu"),
+    ):
         super(PositionalEncoding, self).__init__()
-        
+
         self.max_length = max_length
         self.encoding = torch.zeros(max_length, model_dimension, device=device)
         self.encoding.requires_grad = False
