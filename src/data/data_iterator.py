@@ -114,10 +114,10 @@ class DataIterator(torch.utils.data.Dataset):
         tokenized_source_list, tokenized_target_list = self._tokenize_data_sentences(
             source_list, target_list
         )
-        self._max_source_length = (
+        self.max_source_length = (
             max([len(sentence) for sentence in tokenized_source_list]) + 2
         )
-        self._max_target_length = (
+        self.max_target_length = (
             max([len(sentence) for sentence in tokenized_target_list]) + 2
         )
 
