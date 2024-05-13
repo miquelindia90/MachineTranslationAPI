@@ -657,5 +657,6 @@
     "design": 655,
     "workmanship": 656,
     "UNK": 657,
-    "EOS": 658
+    "EOS": 658,
+    "PAD": 659
 }
