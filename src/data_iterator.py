@@ -54,6 +54,8 @@ class DataIterator:
                 source_list, target_list
             )
         tokenized_source_list, tokenized_target_list = self._tokenize_data_sentences(source_list, target_list)
+        self._max_source_length = max([len(sentence) for sentence in tokenized_source_list]) + 2
+        self._max_target_length = max([len(sentence) for sentence in tokenized_target_list]) + 2
 
         return tokenized_source_list, tokenized_target_list
 
@@ -63,4 +65,6 @@ class DataIterator:
     def __getitem__(self, index):
         source_item_list = [self._tokenizer.source_lang_word_to_id("SOS")] + self._tokenized_source_list[index] + [self._tokenizer.source_lang_word_to_id("EOS")]
         target_item_list = [self._tokenizer.target_lang_word_to_id("SOS")] + self._tokenized_target_list[index] + [self._tokenizer.target_lang_word_to_id("EOS")]
-        return source_item_list, [len(source_item_list)], target_item_list, [len(target_item_list)]
+        padded_source_item_list = source_item_list + [self._tokenizer.source_lang_word_to_id("EOS")] * (self._max_source_length - len(source_item_list))
+        padded_target_item_list = target_item_list + [self._tokenizer.target_lang_word_to_id("EOS")] * (self._max_target_length - len(target_item_list))
+        return padded_source_item_list, [len(source_item_list)], padded_target_item_list, [len(target_item_list)]
