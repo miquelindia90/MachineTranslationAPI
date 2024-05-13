@@ -16,7 +16,7 @@ class DataIterator:
         self._language_pair_filter = language_pair_filter
         self._tokenizer = tokenizer
         self._validate_tokenizer()
-        self.source_list, self.target_list = self.__prepare_iterator_data()
+        self._tokenized_source_list, self._tokenized_target_list = self.__prepare_iterator_data()
 
     def _validate_tokenizer(self):
         if not isinstance(self._tokenizer, MTTokenizer):
@@ -34,6 +34,17 @@ class DataIterator:
         indexed_source_list = [source_list[index] for index in language_indexes]
         indexed_target_list = [target_list[index] for index in language_indexes]
         return indexed_source_list, indexed_target_list
+    
+    def _tokenize_data_sentences(self, source_list: list, target_list: list) -> tuple:
+        tokenized_source_list = [
+            self._tokenizer.source_lang_sentence_to_id_list(sentence)
+            for sentence in source_list
+        ]
+        tokenized_target_list = [
+            self._tokenizer.target_lang_sentence_to_id_list(sentence)
+            for sentence in target_list
+        ]
+        return tokenized_source_list, tokenized_target_list
 
     def __prepare_iterator_data(self):
         source_list = read_text_sentences(self._source_path)
@@ -42,11 +53,12 @@ class DataIterator:
             source_list, target_list = self.__filter_lists_by_language(
                 source_list, target_list
             )
-        return source_list, target_list
+        tokenized_source_list, tokenized_target_list = self._tokenize_data_sentences(source_list, target_list)
+
+        return tokenized_source_list, tokenized_target_list
 
     def __len__(self):
-        return len(self.source_list)
+        return len(self._tokenized_source_list)
 
     def __getitem__(self, index):
-
-        return None
+        return self._tokenized_source_list[index], self._tokenized_target_list[index]
