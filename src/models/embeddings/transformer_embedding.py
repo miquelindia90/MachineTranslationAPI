@@ -27,14 +27,14 @@ class TransformerEmbedding(nn.Module):
 
     def __init__(
         self,
-        vocablulary_size: int,
+        vocabulary_size: int,
         model_dimension: int,
         max_length: int,
         drop_probability: float,
         device: torch.device,
     ):
         super(TransformerEmbedding, self).__init__()
-        self.token_embedding = TokenEmbedding(vocablulary_size, model_dimension)
+        self.token_embedding = TokenEmbedding(vocabulary_size, model_dimension)
         self.position_embedding = PositionalEncoding(
             model_dimension, max_length, device
         )

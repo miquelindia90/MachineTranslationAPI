@@ -46,7 +46,7 @@ def test_positional_encoding_non_trainable():
 
 def test_transformer_embedding_shape():
     transformer_embedding = TransformerEmbedding(
-        vocablulary_size=150,
+        vocabulary_size=150,
         model_dimension=512,
         max_length=100,
         drop_probability=0.1,
@@ -60,7 +60,7 @@ def test_transformer_embedding_shape():
 def test_transformer_embedding_values():
     torch.manual_seed(0)
     transformer_embedding = TransformerEmbedding(
-        vocablulary_size=150,
+        vocabulary_size=150,
         model_dimension=512,
         max_length=100,
         drop_probability=0.0,
