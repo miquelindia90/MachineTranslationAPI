@@ -1,7 +1,9 @@
+import torch
+
 from data.data_utils import read_text_sentences, get_metadata_languages_indexes
 from data.tokenizer import MTTokenizer
 
-class DataIterator:
+class DataIterator(torch.utils.data.Dataset):
     """
     A class that represents a data iterator for machine translation.
 
