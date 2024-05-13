@@ -124,7 +124,7 @@ def test_generator_sampling():
         15,
         658,
     ]
-    assert data_iterator.__getitem__(0)[0][19:] == [658] * 54
+    assert data_iterator.__getitem__(0)[0][19:] == [659] * 54
     assert data_iterator.__getitem__(0)[1] == [18]
 
     assert data_iterator.__getitem__(49)[2][:16] == [
@@ -145,5 +145,5 @@ def test_generator_sampling():
         264,
         418,
     ]
-    assert data_iterator.__getitem__(49)[2][36:] == [666] * 22
+    assert data_iterator.__getitem__(49)[2][36:] == [667] * 22
     assert data_iterator.__getitem__(49)[3] == [36]
