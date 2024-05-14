@@ -1,6 +1,8 @@
 import sys
 import pytest
 
+import numpy as np
+
 sys.path.append("./src")
 
 from data.data_iterator import DataIterator
@@ -104,7 +106,7 @@ def test_generator_sampling():
         assert len(data_iterator.__getitem__(index)[0]) == 73
         assert len(data_iterator.__getitem__(index)[2]) == 58
 
-    assert data_iterator.__getitem__(0)[0][0:18] == [
+    assert np.array_equal(data_iterator.__getitem__(0)[0][0:18], np.array([
         0,
         1,
         2,
@@ -123,11 +125,11 @@ def test_generator_sampling():
         14,
         15,
         658,
-    ]
-    assert data_iterator.__getitem__(0)[0][19:] == [659] * 54
-    assert data_iterator.__getitem__(0)[1] == [18]
+    ]))
+    assert np.array_equal(data_iterator.__getitem__(0)[0][19:], np.array([659] * 54))
+    assert np.array_equal(data_iterator.__getitem__(0)[1], np.array([18]))
 
-    assert data_iterator.__getitem__(49)[2][:16] == [
+    assert np.array_equal(data_iterator.__getitem__(49)[2][:16], np.array([
         0,
         107,
         168,
@@ -144,6 +146,6 @@ def test_generator_sampling():
         417,
         264,
         418,
-    ]
-    assert data_iterator.__getitem__(49)[2][36:] == [667] * 22
-    assert data_iterator.__getitem__(49)[3] == [36]
+    ]))
+    assert np.array_equal(data_iterator.__getitem__(49)[2][36:], np.array([667] * 22))
+    assert np.array_equal(data_iterator.__getitem__(49)[3], np.array([36]))
