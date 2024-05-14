@@ -97,7 +97,7 @@ class Trainer:
             self.params["language_filter_str"],
             self.tokenizer,
         )
-        self.params["max_length"] = train_data_iterator.max_source_length
+        self.params["max_length"] = max(train_data_iterator.max_target_length, train_data_iterator.max_source_length)
         self.training_generator = DataLoader(
             train_data_iterator, **data_loader_parameters
         )
