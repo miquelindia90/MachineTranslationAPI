@@ -169,8 +169,8 @@ class Trainer:
             BLEU = self.best_Bleu + 1
 
             print(
-                "--Validation Epoch:{epoch: d}, BLEU:{eer: 3.3f}, elapse:{elapse: 3.3f} min".format(
-                    epoch=self.epoch, eer=BLEU, elapse=(time.time() - valid_time) / 60,
+                "--Validation Epoch:{epoch: d}, BLEU:{eer: 3.3f}, Loss:{loss: 3.3f}, elapse:{elapse: 3.3f} min".format(
+                    epoch=self.epoch, eer=BLEU, loss=valid_loss/valid_count , elapse=(time.time() - valid_time) / 60,
                 )
             )
             # early stopping and save the best model
@@ -178,7 +178,10 @@ class Trainer:
                 self.best_EER = BLEU
                 self.stopping = 0
                 print("We found a better model!")
-                chkptsave(params, self.net, self.optimizer, self.epoch, None)
+                torch.save({'epoch': self.epoch,
+                            'model_state_dict': self.net.state_dict(),
+                            'optimizer_state_dict': self.optimizer.state_dict()},
+                             self.params["output_directory"] + "/model.pt")
             else:
                 self.stopping += 1
 
