@@ -18,10 +18,10 @@ requeue: False
 
 # Network Parameters
 
-model_dimension: 512
+model_dimension: 128
 number_of_heads: 8
-hidden_dimension: 2048
-number_of_layers: 6
+hidden_dimension: 256
+number_of_layers: 2
 drop_probability: 0.1
 
 # Optimization
@@ -29,9 +29,10 @@ drop_probability: 0.1
 learning_rate: 0.1
 factor: 0.9
 patience: 10
+warmup: 100
 weight_decay: 0.0005
-batch_size: 128
-gradientAccumulation: 1
+batch_size: 32
+gradientAccumulation: 4
 max_epochs: 1000
 early_stopping: 15
 num_workers: 4
