@@ -10,14 +10,15 @@ test_src_path: "data/test.src"
 test_tgt_path: "data/test.tgt"
 test_metadata_path: "data/test.metadata"
 
-languages: "en-sv"
-language_filter_str: '"src_lang": "en", "tgt_lang": "sv"'
-output_directory: "models/en-sv-Transformer"
+languages: "en-nb"
+language_filter_str: '"src_lang": "en", "tgt_lang": "nb"'
+output_directory: "models/en-nb"
 
 requeue: False
 
 # Network Parameters
 
+max_length: 200
 model_dimension: 128
 number_of_heads: 8
 hidden_dimension: 256
