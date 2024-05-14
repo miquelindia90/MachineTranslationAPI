@@ -29,7 +29,7 @@ drop_probability: 0.1
 learning_rate: 0.1
 factor: 0.9
 patience: 10
-warmup: 100
+warmup: 2
 weight_decay: 0.0005
 batch_size: 32
 gradientAccumulation: 4
