@@ -72,6 +72,21 @@ class SingleTokenizer:
             return self._tokens_dictionary[word]
         else:
             return self._tokens_dictionary["UNK"]
+        
+    def id_to_word(self, id: int) -> str:
+        """
+        Maps an ID to its corresponding word in the tokens dictionary.
+
+        Args:
+            id (int): The input ID.
+
+        Returns:
+            The word corresponding to the ID.
+        """
+        for word, word_id in self._tokens_dictionary.items():
+            if word_id == id:
+                return word
+        return "UNK"
 
     def sentence_to_id_list(self, sentence: str) -> list:
         """
@@ -84,6 +99,18 @@ class SingleTokenizer:
             A list of word IDs representing the sentence.
         """
         return self._words_to_id_list(self._split_sentence_in_words(sentence))
+    
+    def list_id_to_word_list(self, sentence: str) -> list:
+        """
+        Converts a list of word ids to a list of words.
+
+        Args:
+            sentence (str): The input sentence.
+
+        Returns:
+            A list of words representing the sentence.
+        """
+        return [self.id_to_word(int(word_id)) for word_id in sentence.split()]
 
     def _words_to_id_list(self, words: list) -> list:
         """
@@ -217,6 +244,18 @@ class MTTokenizer:
             int: The token ID of the word.
         """
         return self._target_dicitonary.word_to_id(word)
+    
+    def target_lang_id_to_word(self, id: int) -> str:
+        """
+        Convert a token ID in the target language to its corresponding word.
+
+        Args:
+            id (int): The token ID to convert.
+
+        Returns:
+            str: The word corresponding to the token ID.
+        """
+        return self._target_dicitonary.id_to_word(id)
 
     def target_lang_sentence_to_id_list(self, sentence: str) -> list:
         """
@@ -229,6 +268,18 @@ class MTTokenizer:
             list: A list of token IDs representing the sentence.
         """
         return self._target_dicitonary.sentence_to_id_list(sentence)
+    
+    def target_lang_list_id_to_word_list(self, id_list: list) -> list:
+        """
+        Convert a list of token IDs in the target language to a list of words.
+
+        Args:
+            sentence (str): The sentence to convert.
+
+        Returns:
+            list: A list of words representing the sentence.
+        """
+        return self._target_dicitonary.list_id_to_word_list(id_list)
 
     def train(
         self,
