@@ -1,6 +1,7 @@
 tox
 torch
 matplotlib
+nltk
 flask
 pyyaml
 tqdm
