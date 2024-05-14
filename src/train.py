@@ -13,6 +13,7 @@ from tqdm import tqdm
 sys.path.append("./src")
 from data.tokenizer import MTTokenizer
 from data.data_iterator import DataIterator
+from data.scoring import calculate_batch_bleu_score
 from models.transformer import Transformer
 
 
@@ -103,9 +104,6 @@ class Trainer:
             self.params["language_filter_str"],
             self.tokenizer,
         )
-        self.params["max_length"] = max(
-            train_data_iterator.max_target_length, train_data_iterator.max_source_length
-        )
         self.training_generator = DataLoader(
             train_data_iterator, **data_loader_parameters
         )
@@ -114,6 +112,16 @@ class Trainer:
                 self.params["valid_src_path"],
                 self.params["valid_tgt_path"],
                 self.params["valid_metadata_path"],
+                self.params["language_filter_str"],
+                self.tokenizer,
+            ),
+            **data_loader_parameters,
+        )
+        self.test_generator = DataLoader(
+            DataIterator(
+                self.params["test_src_path"],
+                self.params["test_tgt_path"],
+                self.params["test_metadata_path"],
                 self.params["language_filter_str"],
                 self.tokenizer,
             ),
@@ -155,14 +163,28 @@ class Trainer:
 
         return valid_loss / valid_count, time.time() - valid_time
 
+    def _calculate_assisted_bleu(self):
+        assisted_bleu = 0.0
+        batch_count = 0.
+        for source_tensor, _, target_tensor, target_length in self.test_generator:
+            batch_count += 1
+            source_tensor, target_tensor = (
+                source_tensor.long().to(self.device),
+                target_tensor.long().to(self.device),
+            )
+            prediction = self.net(source_tensor, target_tensor[:, :-1])
+            assisted_bleu += calculate_batch_bleu_score(prediction, target_tensor[:, 1:], target_length, self.tokenizer)
+
+        return assisted_bleu/batch_count
+
     def _validate(self):
         with torch.no_grad():
             self.net.eval()
             valid_loss, valid_elpased_time = self._calculate_valid_loss()
-
+            assisted_bleu = self._calculate_assisted_bleu()
             print(
-                "--Validation Epoch:{epoch: d}, Loss:{loss: 3.3f}, elapse:{elapse: 3.3f} min".format(
-                    epoch=self.epoch, loss=valid_loss, elapse=valid_elpased_time / 60,
+                "--Validation Epoch:{epoch: d}, Loss:{loss: 3.3f}, Assisted_BLEU:{bleu: 3.3f} elapse:{elapse: 3.3f} min".format(
+                    epoch=self.epoch, loss=valid_loss, bleu=assisted_bleu, elapse=valid_elpased_time / 60,
                 )
             )
             # early stopping and save the best model
