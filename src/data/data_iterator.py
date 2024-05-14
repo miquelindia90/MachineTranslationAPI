@@ -1,3 +1,4 @@
+import numpy as np
 import torch
 
 from data.data_utils import read_text_sentences, get_metadata_languages_indexes
@@ -139,13 +140,13 @@ class DataIterator(torch.utils.data.Dataset):
         )
         padded_source_item_list = source_item_list + [
             self._tokenizer.source_lang_word_to_id("PAD")
-        ] * (self._max_source_length - len(source_item_list))
+        ] * (self.max_source_length - len(source_item_list))
         padded_target_item_list = target_item_list + [
             self._tokenizer.target_lang_word_to_id("PAD")
-        ] * (self._max_target_length - len(target_item_list))
+        ] * (self.max_target_length - len(target_item_list))
         return (
-            padded_source_item_list,
-            [len(source_item_list)],
-            padded_target_item_list,
-            [len(target_item_list)],
+            np.array(padded_source_item_list),
+            np.array([len(source_item_list)]),
+            np.array(padded_target_item_list),
+            np.array([len(target_item_list)]),
         )
