@@ -5,23 +5,15 @@ import time
 
 
 import torch
-
-# from torch.nn import functional as F
 from torch import optim
 from torch.utils.data import DataLoader
 
-# import numpy as np
 from tqdm import tqdm
 
 sys.path.append("./src")
 from data.tokenizer import MTTokenizer
 from data.data_iterator import DataIterator
 from models.transformer import Transformer
-
-# from model import SpeakerClassifier
-# from loss import *
-# from utils import *
-
 
 class Trainer:
     def __init__(self, params, device):
@@ -58,7 +50,7 @@ class Trainer:
         else:
             self.starting_epoch = 0
 
-        self.best_Bleu = 0.0
+        self.best_valid_loss = 1_000
         self.stopping = 0.0
 
     def _load_network(self):
@@ -91,6 +83,7 @@ class Trainer:
             self.params["train_metadata_path"],
             self.params["language_filter_str"],
         )
+        self.tokenizer.save_tokens_dictionary(self.params["output_directory"] + "/source_tokens.json", self.params["output_directory"] + "/target_tokens.json")
         data_loader_parameters = {
             "batch_size": self.params["batch_size"],
             "shuffle": True,
@@ -126,15 +119,7 @@ class Trainer:
             lr=self.params["learning_rate"],
             weight_decay=self.params["weight_decay"],
         )
-
-        self.scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer=self.optimizer,
-                                                 verbose=True,
-                                                 factor=self.params["factor"],
-                                                 patience=self.params["patience"],)
-
-    def _update_optimizer(self, valid_loss: torch.Tensor):
-        if self.epoch > self.params["warmup"]:
-            self.scheduler.step(valid_loss)
+        
 
     def _load_criterion(self):
         self.criterion = torch.nn.CrossEntropyLoss(ignore_index=self.tokenizer.target_lang_word_to_id("PAD"))
@@ -144,17 +129,13 @@ class Trainer:
         self.train_batch = 0
 
 
-    def _calculate_BLEU(self, prediction: torch.Tensor, target_tensor: torch.Tensor, target_length: torch.Tensor) -> float:
-        return 0.0
-
-
     def _validate(self):
         with torch.no_grad():
             valid_time = time.time()
-            valid_loss, batch_BLEU, valid_count = 0.0, list(), 0
+            valid_loss, valid_count = 0.0, 0
             self.net.eval()
             
-            for source_tensor, _, target_tensor, target_length in self.validation_generator:
+            for source_tensor, _, target_tensor, _ in self.validation_generator:
                 source_tensor, target_tensor = (
                     source_tensor.long().to(self.device),
                     target_tensor.long().to(self.device),
@@ -162,20 +143,18 @@ class Trainer:
                 prediction = self.net(source_tensor, target_tensor[:,:-1])
                 loss = self.criterion(prediction.reshape(-1, prediction.size(-1)), target_tensor[:,1:].reshape(-1))
                 valid_loss += loss.item()
-                batch_BLEU.append(self._calculate_BLEU(prediction, target_tensor[:,1:], target_length))
                 valid_count += 1
            
-
-            BLEU = self.best_Bleu + 1
+            valid_loss = valid_loss / valid_count
 
             print(
-                "--Validation Epoch:{epoch: d}, BLEU:{eer: 3.3f}, Loss:{loss: 3.3f}, elapse:{elapse: 3.3f} min".format(
-                    epoch=self.epoch, eer=BLEU, loss=valid_loss/valid_count , elapse=(time.time() - valid_time) / 60,
+                "--Validation Epoch:{epoch: d}, Loss:{loss: 3.3f}, elapse:{elapse: 3.3f} min".format(
+                    epoch=self.epoch, loss=valid_loss, elapse=(time.time() - valid_time) / 60,
                 )
             )
             # early stopping and save the best model
-            if BLEU > self.best_Bleu:
-                self.best_EER = BLEU
+            if valid_loss < self.best_valid_loss:
+                self.best_valid_loss = valid_loss
                 self.stopping = 0
                 print("We found a better model!")
                 torch.save({'epoch': self.epoch,
@@ -186,14 +165,10 @@ class Trainer:
                 self.stopping += 1
 
             self.net.train()
-            return valid_loss / valid_count
 
     def _update(self):
         self.optimizer.step()
         self.optimizer.zero_grad()
-
-    def __updateTrainningVariables(self, valid_loss):
-            self._update_optimizer(valid_loss)
 
     def _update_metrics(self, loss, batch_looper):
         self.train_loss[self.train_batch] = loss.item()
@@ -234,13 +209,11 @@ class Trainer:
                 if self.train_batch % self.params["gradientAccumulation"] == 0:
                      self._update()
 
-            valid_loss = self._validate()
+            self._validate()
 
             if self.stopping > self.params["early_stopping"]:
-                print("--Best Model EER%%: %.2f" % (self.best_Bleu))
+                print("--Best Model Valid Loss%%: %.2f" % (self.best_valid_loss))
                 break
-
-            self.__updateTrainningVariables(valid_loss)
 
         print("Finished Training")
 
