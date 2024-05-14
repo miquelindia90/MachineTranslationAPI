@@ -15,6 +15,7 @@ from data.tokenizer import MTTokenizer
 from data.data_iterator import DataIterator
 from models.transformer import Transformer
 
+
 class Trainer:
     def __init__(self, params, device):
         self.params = params
@@ -28,7 +29,9 @@ class Trainer:
     def __load_previous_states(self):
         list_files = os.listdir(self.params["output_directory"])
         list_files = [
-            self.params["output_directory"] + "/" + f for f in list_files if ".chkpt" in f
+            self.params["output_directory"] + "/" + f
+            for f in list_files
+            if ".chkpt" in f
         ]
         if list_files:
             file2load = max(list_files, key=os.path.getctime)
@@ -83,7 +86,10 @@ class Trainer:
             self.params["train_metadata_path"],
             self.params["language_filter_str"],
         )
-        self.tokenizer.save_tokens_dictionary(self.params["output_directory"] + "/source_tokens.json", self.params["output_directory"] + "/target_tokens.json")
+        self.tokenizer.save_tokens_dictionary(
+            self.params["output_directory"] + "/source_tokens.json",
+            self.params["output_directory"] + "/target_tokens.json",
+        )
         data_loader_parameters = {
             "batch_size": self.params["batch_size"],
             "shuffle": True,
@@ -97,7 +103,9 @@ class Trainer:
             self.params["language_filter_str"],
             self.tokenizer,
         )
-        self.params["max_length"] = max(train_data_iterator.max_target_length, train_data_iterator.max_source_length)
+        self.params["max_length"] = max(
+            train_data_iterator.max_target_length, train_data_iterator.max_source_length
+        )
         self.training_generator = DataLoader(
             train_data_iterator, **data_loader_parameters
         )
@@ -109,9 +117,8 @@ class Trainer:
                 self.params["language_filter_str"],
                 self.tokenizer,
             ),
-            **data_loader_parameters
+            **data_loader_parameters,
         )
-       
 
     def _load_optimizer(self):
         self.optimizer = optim.Adam(
@@ -119,37 +126,43 @@ class Trainer:
             lr=self.params["learning_rate"],
             weight_decay=self.params["weight_decay"],
         )
-        
 
     def _load_criterion(self):
-        self.criterion = torch.nn.CrossEntropyLoss(ignore_index=self.tokenizer.target_lang_word_to_id("PAD"))
+        self.criterion = torch.nn.CrossEntropyLoss(
+            ignore_index=self.tokenizer.target_lang_word_to_id("PAD")
+        )
 
     def _initialize_batch_variables(self):
         self.train_loss = [None] * len(self.training_generator)
         self.train_batch = 0
 
+    def _calculate_valid_loss(self):
+        valid_time = time.time()
+        valid_loss, valid_count = 0.0, 0
+
+        for source_tensor, _, target_tensor, _ in self.validation_generator:
+            source_tensor, target_tensor = (
+                source_tensor.long().to(self.device),
+                target_tensor.long().to(self.device),
+            )
+            prediction = self.net(source_tensor, target_tensor[:, :-1])
+            loss = self.criterion(
+                prediction.reshape(-1, prediction.size(-1)),
+                target_tensor[:, 1:].reshape(-1),
+            )
+            valid_loss += loss.item()
+            valid_count += 1
+
+        return valid_loss / valid_count, time.time() - valid_time
 
     def _validate(self):
         with torch.no_grad():
-            valid_time = time.time()
-            valid_loss, valid_count = 0.0, 0
             self.net.eval()
-            
-            for source_tensor, _, target_tensor, _ in self.validation_generator:
-                source_tensor, target_tensor = (
-                    source_tensor.long().to(self.device),
-                    target_tensor.long().to(self.device),
-                )
-                prediction = self.net(source_tensor, target_tensor[:,:-1])
-                loss = self.criterion(prediction.reshape(-1, prediction.size(-1)), target_tensor[:,1:].reshape(-1))
-                valid_loss += loss.item()
-                valid_count += 1
-           
-            valid_loss = valid_loss / valid_count
+            valid_loss, valid_elpased_time = self._calculate_valid_loss()
 
             print(
                 "--Validation Epoch:{epoch: d}, Loss:{loss: 3.3f}, elapse:{elapse: 3.3f} min".format(
-                    epoch=self.epoch, loss=valid_loss, elapse=(time.time() - valid_time) / 60,
+                    epoch=self.epoch, loss=valid_loss, elapse=valid_elpased_time / 60,
                 )
             )
             # early stopping and save the best model
@@ -157,10 +170,14 @@ class Trainer:
                 self.best_valid_loss = valid_loss
                 self.stopping = 0
                 print("We found a better model!")
-                torch.save({'epoch': self.epoch,
-                            'model_state_dict': self.net.state_dict(),
-                            'optimizer_state_dict': self.optimizer.state_dict()},
-                             self.params["output_directory"] + "/model.pt")
+                torch.save(
+                    {
+                        "epoch": self.epoch,
+                        "model_state_dict": self.net.state_dict(),
+                        "optimizer_state_dict": self.optimizer.state_dict(),
+                    },
+                    self.params["output_directory"] + "/model.pt",
+                )
             else:
                 self.stopping += 1
 
@@ -185,9 +202,7 @@ class Trainer:
         batch_looper.set_description(
             f"Epoch [{self.epoch}/{self.params['max_epochs']}]"
         )
-        batch_looper.set_postfix(
-            loss=sum(self.train_loss[index_range]) / index_len
-        )
+        batch_looper.set_postfix(loss=sum(self.train_loss[index_range]) / index_len)
 
     def train(self):
         print("Start Training")
@@ -202,12 +217,15 @@ class Trainer:
                     source_tensor.long().to(self.device),
                     target_tensor.long().to(self.device),
                 )
-                prediction = self.net(source_tensor, target_tensor[:,:-1])
-                loss = self.criterion(prediction.reshape(-1, prediction.size(-1)), target_tensor[:,1:].reshape(-1))
+                prediction = self.net(source_tensor, target_tensor[:, :-1])
+                loss = self.criterion(
+                    prediction.reshape(-1, prediction.size(-1)),
+                    target_tensor[:, 1:].reshape(-1),
+                )
                 loss.backward()
                 self._update_metrics(loss, batch_looper)
                 if self.train_batch % self.params["gradientAccumulation"] == 0:
-                     self._update()
+                    self._update()
 
             self._validate()
 
