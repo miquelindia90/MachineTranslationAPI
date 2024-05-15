@@ -72,7 +72,7 @@ class SingleTokenizer:
             return self._tokens_dictionary[word]
         else:
             return self._tokens_dictionary["UNK"]
-        
+
     def id_to_word(self, id: int) -> str:
         """
         Maps an ID to its corresponding word in the tokens dictionary.
@@ -99,7 +99,7 @@ class SingleTokenizer:
             A list of word IDs representing the sentence.
         """
         return self._words_to_id_list(self._split_sentence_in_words(sentence))
-    
+
     def list_id_to_word_list(self, sentence: str) -> list:
         """
         Converts a list of word ids to a list of words.
@@ -244,7 +244,7 @@ class MTTokenizer:
             int: The token ID of the word.
         """
         return self._target_dicitonary.word_to_id(word)
-    
+
     def target_lang_id_to_word(self, id: int) -> str:
         """
         Convert a token ID in the target language to its corresponding word.
@@ -268,7 +268,7 @@ class MTTokenizer:
             list: A list of token IDs representing the sentence.
         """
         return self._target_dicitonary.sentence_to_id_list(sentence)
-    
+
     def target_lang_list_id_to_word_list(self, id_list: list) -> list:
         """
         Convert a list of token IDs in the target language to a list of words.
