@@ -2,6 +2,7 @@ import sys
 import argparse
 
 import torch
+from tqdm import tqdm
 import yaml
 
 sys.path.append("src")
@@ -120,7 +121,10 @@ def _translate_sentences(translator: Translator, source_sentences: list) -> list
         list: A list of translated sentences.
 
     """
-    return [translator.translate(sentence) for sentence in source_sentences]
+    translated_senteces = list()
+    for sentence in tqdm(source_sentences, desc="Translating Sentences"):
+        translated_senteces.append(translator.translate(sentence))
+    return translated_senteces
 
 
 def _evaluate_bleu_score(translated_sentences: list, target_sentences: list) -> None:
