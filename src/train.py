@@ -165,7 +165,7 @@ class Trainer:
 
     def _calculate_assisted_bleu(self):
         assisted_bleu = 0.0
-        batch_count = 0.
+        batch_count = 0.0
         for source_tensor, _, target_tensor, target_length in self.test_generator:
             batch_count += 1
             source_tensor, target_tensor = (
@@ -173,9 +173,11 @@ class Trainer:
                 target_tensor.long().to(self.device),
             )
             prediction = self.net(source_tensor, target_tensor[:, :-1])
-            assisted_bleu += calculate_batch_bleu_score(prediction, target_tensor[:, 1:], target_length, self.tokenizer)
+            assisted_bleu += calculate_batch_bleu_score(
+                prediction, target_tensor[:, 1:], target_length, self.tokenizer
+            )
 
-        return assisted_bleu/batch_count
+        return assisted_bleu / batch_count
 
     def _validate(self):
         with torch.no_grad():
@@ -184,7 +186,10 @@ class Trainer:
             assisted_bleu = self._calculate_assisted_bleu()
             print(
                 "--Validation Epoch:{epoch: d}, Loss:{loss: 3.3f}, Assisted_BLEU:{bleu: 3.3f} elapse:{elapse: 3.3f} min".format(
-                    epoch=self.epoch, loss=valid_loss, bleu=assisted_bleu, elapse=valid_elpased_time / 60,
+                    epoch=self.epoch,
+                    loss=valid_loss,
+                    bleu=assisted_bleu,
+                    elapse=valid_elpased_time / 60,
                 )
             )
             # early stopping and save the best model
