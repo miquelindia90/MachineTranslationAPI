@@ -40,42 +40,23 @@ Remember to replace `http://localhost:8000` with the appropriate URL if you are 
 
 ### Supported Languages
 
-| Language | BLEU (%) |
-|----------|----------|
-| en-sv    |   2.14   |
-| en-da    |   2.52   |
-| en-nb    |   7.64   |
-| sv-en    |   2.9    |
-| sv-nb    |          |
-| sv-da    |   5.09   |
-| nb-en    |          |
-| nb-da    |          |
-| nb-sv    |          |
-| da-en    |          |
-| da-nb    |          |
-| da-sv    |          |
+Here are the languages supported by the MachineTranslationAPI. The table below shows the BLEU scores for the individual single direction models (SDMT) and the Multilingual model (MLMT):
 
-## Installation
+| Language | SDMT BLEU (%) | MLMT BLEU (%) |
+|----------|---------------|---------------|
+| en-sv    |     2.14      |               |
+| en-da    |     2.52      |               |
+| en-nb    |     7.64      |               |
+| sv-en    |     2.9       |               |
+| sv-nb    |               |               |
+| sv-da    |     5.09      |               |
+| nb-en    |               |               |
+| nb-da    |               |               |
+| nb-sv    |               |               |
+| da-en    |               |               |
+| da-nb    |               |               |
+| da-sv    |               |               |
 
-To install the MachineTranslationAPI, follow these steps:
-
-1. Clone the repository:
-
-    ```bash
-    git clone https://github.com/your-username/MachineTranslationAPI.git
-    ```
-
-2. Navigate to the project directory:
-
-    ```bash
-    cd MachineTranslationAPI
-    ```
-
-3. Install the required dependencies:
-
-    ```bash
-    pip install -r requirements.txt
-    ```
 
 ## Training a Model
 
