@@ -62,6 +62,7 @@ def _load_model(
         hidden_dimension=model_parameters["hidden_dimension"],
         number_of_layers=model_parameters["number_of_layers"],
         drop_probability=model_parameters["drop_probability"],
+        device=device,
     )
     model.load_state_dict(
         torch.load(model_path, map_location=device)["model_state_dict"]
@@ -84,8 +85,13 @@ def _prepare_translator(
         Translator: The prepared translator object.
     """
     tokenizer = _load_tokenizer(params.model)
-    model = _load_model(model_parameters, tokenizer, params.model + "/model.pt")
-    translator = Translator(model, tokenizer)
+    model = _load_model(
+        model_parameters,
+        tokenizer,
+        params.model + "/model.pt",
+        device=torch.device(params.device),
+    )
+    translator = Translator(model, tokenizer, device=torch.device(params.device))
     return translator
 
 
@@ -187,9 +193,7 @@ def main(params: argparse.Namespace) -> None:
     model_parameters = yaml.safe_load(open(params.model + "/config.yaml", "r"))
     translator = _prepare_translator(model_parameters, params)
     source_sentences, target_sentences = _prepare_evaluation_data(model_parameters)
-    translated_sentences = (
-        _translate_sentences(translator, source_sentences)
-    )
+    translated_sentences = _translate_sentences(translator, source_sentences)
     _evaluate_bleu_score(translated_sentences, target_sentences)
     if params.output_path:
         _write_translation_output(
@@ -204,6 +208,14 @@ if __name__ == "__main__":
     )
     argparser.add_argument(
         "--output_path", "-o", type=str, default="", help="Path to the output file"
+    )
+    argparser.add_argument(
+        "--device",
+        "-d",
+        type=str,
+        default="cpu",
+        choices=["cpu", "cuda:0"],
+        help="Device to run the model on",
     )
     params = argparser.parse_args()
     main(params)
