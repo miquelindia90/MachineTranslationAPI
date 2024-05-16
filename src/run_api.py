@@ -1,8 +1,12 @@
+import sys
+
 from flask import Flask, request, jsonify
-from your_translation_module import Translator
+
+sys.path.append("src/")
+from inference.translation_platform import MultiLanguageTranslator
 
 app = Flask(__name__)
-translador = Translador()
+translator = MultiLanguageTranslator("models/")
 
 
 @app.route("/translate", methods=["POST"])
