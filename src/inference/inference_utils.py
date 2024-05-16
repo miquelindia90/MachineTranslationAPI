@@ -62,11 +62,10 @@ def load_model(
     model.load_state_dict(
         torch.load(model_path, map_location=device)["model_state_dict"]
     )
-    model = torch.quantization.quantize_dynamic(
-        model, 
-        {torch.nn.Linear},
-        dtype=torch.qint8
-    )
+    if device == torch.device("cpu"):
+        model = torch.quantization.quantize_dynamic(
+            model, {torch.nn.Linear}, dtype=torch.qint8
+        )
     model.eval()
     return model
 
@@ -93,5 +92,3 @@ def prepare_translator(
     )
     translator = Translator(model, tokenizer, device=torch.device(device))
     return translator
-
-
