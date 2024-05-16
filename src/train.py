@@ -11,6 +11,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 sys.path.append("./src")
+from data.data_utils import write_translation_output
 from data.tokenizer import MTTokenizer
 from data.data_iterator import DataIterator
 from data.scoring import calculate_batch_bleu_score
@@ -107,6 +108,12 @@ class Trainer:
         self.training_generator = DataLoader(
             train_data_iterator, **data_loader_parameters
         )
+        data_loader_parameters = {
+            "batch_size": self.params["batch_size"],
+            "shuffle": False,
+            "drop_last": False,
+            "num_workers": self.params["num_workers"],
+        }
         self.validation_generator = DataLoader(
             DataIterator(
                 self.params["valid_src_path"],
@@ -117,14 +124,15 @@ class Trainer:
             ),
             **data_loader_parameters,
         )
-        self.test_generator = DataLoader(
-            DataIterator(
+        self.test_iterator = DataIterator(
                 self.params["test_src_path"],
                 self.params["test_tgt_path"],
                 self.params["test_metadata_path"],
                 self.params["language_filter_str"],
                 self.tokenizer,
-            ),
+            )
+        self.test_generator = DataLoader(
+            self.test_iterator,
             **data_loader_parameters,
         )
 
@@ -162,10 +170,28 @@ class Trainer:
             valid_count += 1
 
         return valid_loss / valid_count, time.time() - valid_time
+    
+    def _write_epoch_translations(self, predictions: list):
+        
+        source_sentences = list()
+        target_sentences = list()
+        translated_sentences = list()
 
-    def _calculate_assisted_bleu(self):
+        for index, prediction in enumerate(predictions):
+            source_sentences.append(self.test_iterator.get_source_sentence(index))
+            target_sentences.append(self.test_iterator.get_target_sentence(index))
+            translated_sentence = self.tokenizer.target_lang_list_id_to_word_list(prediction)
+            if translated_sentence[-1] == self.tokenizer.source_lang_word_to_id("EOS"):
+                translated_sentence = translated_sentence[:-1]
+            translated_sentences.append(' '.join(translated_sentence))
+
+        write_translation_output(source_sentences, target_sentences, translated_sentences, self.params["output_directory"] + "/translations.txt")
+        
+
+    def _evaluated_assisted_bleu(self):
         assisted_bleu = 0.0
         batch_count = 0.0
+        predictions = list()
         for source_tensor, _, target_tensor, target_length in self.test_generator:
             batch_count += 1
             source_tensor, target_tensor = (
@@ -173,17 +199,18 @@ class Trainer:
                 target_tensor.long().to(self.device),
             )
             prediction = self.net(source_tensor, target_tensor[:, :-1])
+            predictions.append(target_tensor[index, :].to_list() for index in range(target_tensor.size(0)))
             assisted_bleu += calculate_batch_bleu_score(
                 prediction, target_tensor[:, 1:], target_length, self.tokenizer
             )
-
+        self._write_epoch_translations(predictions)
         return assisted_bleu / batch_count
 
     def _validate(self):
         with torch.no_grad():
             self.net.eval()
             valid_loss, valid_elpased_time = self._calculate_valid_loss()
-            assisted_bleu = self._calculate_assisted_bleu()
+            assisted_bleu = self._evaluate_assisted_bleu()
             print(
                 "--Validation Epoch:{epoch: d}, Loss:{loss: 3.3f}, Assisted_BLEU:{bleu: 3.3f} elapse:{elapse: 3.3f} min".format(
                     epoch=self.epoch,

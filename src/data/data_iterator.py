@@ -109,7 +109,7 @@ class DataIterator(torch.utils.data.Dataset):
         source_list = read_text_sentences(self._source_path)
         target_list = read_text_sentences(self._target_path)
         if self._language_pair_filter != "None":
-            source_list, target_list = self.__filter_lists_by_language(
+            self.source_list, self.target_list = self.__filter_lists_by_language(
                 source_list, target_list
             )
         tokenized_source_list, tokenized_target_list = self._tokenize_data_sentences(
@@ -123,6 +123,12 @@ class DataIterator(torch.utils.data.Dataset):
         )
 
         return tokenized_source_list, tokenized_target_list
+
+    def get_source_sentence(self, index: int) -> str:
+        return self.source_list[index]
+
+    def get_target_sentence(self, index: int) -> str:
+        return self.target_list[index]
 
     def __len__(self):
         return len(self._tokenized_source_list)
