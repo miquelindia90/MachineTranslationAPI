@@ -16,7 +16,10 @@ class Translator:
     ):
         self.net = net
         self._init_tokenizer(tokenizer)
-        self.beam_searcher = BeamSearcher(SOS_token_id=self.tokenizer.target_lang_word_to_id("SOS"), EOS_token_id=self.tokenizer.target_lang_word_to_id("EOS"))
+        self.beam_searcher = BeamSearcher(
+            SOS_token_id=self.tokenizer.target_lang_word_to_id("SOS"),
+            EOS_token_id=self.tokenizer.target_lang_word_to_id("EOS"),
+        )
         self.device = device
         self.net.to(self.device)
 
@@ -42,12 +45,13 @@ class Translator:
         encoder_input_tensor, decoder_tensor = self._prepare_input_tensor(sentence)
         encoder_output = self.net.encoder(encoder_input_tensor, None)
         while not self.beam_searcher.search_is_finished:
-            print("Decoding ...")
-            decoder_output = self.net.decoder(decoder_tensor, encoder_output, None, None)
-            self.beam_searcher.update(decoder_tensor, decoder_output)
-        #     target_tensor = self.beam_searcher.get_current_target_tensor()
-            print(decoder_output.size())
-        # return self.tokenizer.target_lang_id_list_to_sentence(
-        #     self.beam_searcher.get_best_hypothesis()
-        # )
-        return sentence
+            decoder_output = self.net.decoder(
+                decoder_tensor, encoder_output, None, None
+            )
+            decoder_tensor = self.beam_searcher.update(decoder_tensor, decoder_output)
+            decoder_tensor = decoder_tensor.to(self.device)
+        raw_sentence = " ".join(
+            self.tokenizer.target_lang_id_to_word(word_id)
+            for word_id in self.beam_searcher.get_best_hypothesis_sequence()
+        )
+        return raw_sentence
