@@ -52,6 +52,7 @@ def _translate_sentences(translator: Translator, source_sentences: list) -> list
     translated_senteces = list()
     for sentence in tqdm(source_sentences, desc="Translating Sentences"):
         translated_senteces.append(translator.translate(sentence))
+        print(translated_senteces[-1])
     return translated_senteces
 
 
@@ -84,13 +85,18 @@ def main(params: argparse.Namespace) -> None:
     Returns:
         None
     """
-    print(f"Evaluating model at {params.model}")
+    print(f"Evaluating model at {params.model} ...")
     model_parameters = yaml.safe_load(open(params.model + "/config.yaml", "r"))
+    print(f"Initializating Translator ...")
     translator = prepare_translator(model_parameters=model_parameters, model_path= params.model, device = params.device)
+    print(f"Preparing Evaluation Data ...")
     source_sentences, target_sentences = _prepare_evaluation_data(model_parameters)
+    print(f"Translating Sentences ...")
     translated_sentences = _translate_sentences(translator, source_sentences)
+    print(f"Evaluating Model ...")
     _evaluate_bleu_score(translated_sentences, target_sentences)
     if params.output_path:
+        print(f"Writing Translation Output to {params.output_path} ...")
         write_translation_output(
             source_sentences, translated_sentences, target_sentences, params.output_path
         )
