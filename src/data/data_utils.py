@@ -34,3 +34,30 @@ def get_metadata_languages_indexes(
             if language_filter_str in line.strip():
                 indexes.append(index)
     return indexes
+
+
+def write_translation_output(
+    source_sentences: list,
+    translated_sentences: list,
+    target_sentences: list,
+    output_path: str,
+) -> None:
+    """
+    Write the translation output to a file.
+
+    Args:
+        source_sentences (list): List of source sentences.
+        translated_sentences (list): List of translated sentences.
+        target_sentences (list): List of target sentences.
+        output_path (str): Path to the output file.
+
+    Returns:
+        None
+    """
+    with open(output_path, "w") as output_file:
+        for source_sentence, translated_sentence, target_sentence in zip(
+            source_sentences, translated_sentences, target_sentences
+        ):
+            output_file.write(f"Src: {source_sentence}\n")
+            output_file.write(f"Tra: {translated_sentence}\n")
+            output_file.write(f"Tgt: {target_sentence}\n\n")
