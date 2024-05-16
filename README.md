@@ -61,6 +61,13 @@ Here are the languages supported by the MachineTranslationAPI. The table below s
 
 To train a machine translation model, follow these steps:
 
+0. Install the required dependencies by running the following command in the terminal:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+   This will install all the necessary packages specified in the `requirements.txt` file. Make sure you have Python 3.8, 3.9, or 3.10 installed on your system as the repository supports these versions.
+
 1. Prepare your training data in the following format:
 
       - You need to have data for the three common data splits: training, validation, and test.
@@ -87,7 +94,7 @@ To train a machine translation model, follow these steps:
 
 ## Evaluating a Model
 
-To evaluate a trained machine translation model, follow these steps:
+Before anything, make sure that you have installed the corresponding python dependencies (explained in previous section step 0). To evaluate a trained machine translation model, follow these steps:
 
 1. Run the evaluation script:
 
