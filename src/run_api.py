@@ -13,8 +13,8 @@ translator = MultiLanguageTranslator("models/")
 def translate_text():
     data = request.json
     input_text = data["text"]
-    target_language = data["target_language"]
-    translated_text = translator.translate(input_text, target_language)
+    language_pair = data["language_pair"]
+    translated_text = translator.translate(input_text, language_pair)
     return jsonify({"translated_text": translated_text})
 
 
