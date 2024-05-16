@@ -106,3 +106,7 @@ Before anything, make sure that you have installed the corresponding python depe
 
 ## Findings
 
+This repo has been tested using the dataset provided by LanguageWire in [here]{https://languagewire-my.sharepoint.com/personal/adas_languagewire_com/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fadas%5Flanguagewire%5Fcom%2FDocuments%2Fsenior%5Fml%5Fengineer%5Ftech%5Fchallenge%5Fdata%5Flw%5Fmlt%5Ftech%5Fchallenge%2Ezip&parent=%2Fpersonal%2Fadas%5Flanguagewire%5Fcom%2FDocuments&ga=1}. Here are some findings, improvements and future work that could be done in this repository:
+
+
+
