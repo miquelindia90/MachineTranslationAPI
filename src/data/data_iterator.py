@@ -106,14 +106,14 @@ class DataIterator(torch.utils.data.Dataset):
         Returns:
             tuple: A tuple containing the tokenized source list and target list.
         """
-        source_list = read_text_sentences(self._source_path)
-        target_list = read_text_sentences(self._target_path)
+        self.source_list = read_text_sentences(self._source_path)
+        self.target_list = read_text_sentences(self._target_path)
         if self._language_pair_filter != "None":
             self.source_list, self.target_list = self.__filter_lists_by_language(
-                source_list, target_list
+                self.source_list, self.target_list
             )
         tokenized_source_list, tokenized_target_list = self._tokenize_data_sentences(
-            source_list, target_list
+            self.source_list, self.target_list
         )
         self.max_source_length = (
             max([len(sentence) for sentence in tokenized_source_list]) + 2
