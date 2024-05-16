@@ -52,7 +52,6 @@ def _translate_sentences(translator: Translator, source_sentences: list) -> list
     translated_senteces = list()
     for sentence in tqdm(source_sentences, desc="Translating Sentences"):
         translated_senteces.append(translator.translate(sentence))
-        print(translated_senteces[-1])
     return translated_senteces
 
 
@@ -72,7 +71,7 @@ def _evaluate_bleu_score(translated_sentences: list, target_sentences: list) -> 
         translated_sentences, target_sentences
     ):
         bleu += calculate_bleu_score(translated_sentence, [target_sentence])
-    print(f"BLEU score: {bleu/len(translated_sentences)}")
+    print(f"BLEU score: {round(bleu/len(translated_sentences), 2)}")
 
 
 def main(params: argparse.Namespace) -> None:
