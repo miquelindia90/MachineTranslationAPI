@@ -43,7 +43,7 @@ Remember to replace `http://localhost:8000` with the appropriate URL if you are 
 Here are the languages supported by the MachineTranslationAPI. The table below shows the BLEU scores for the individual single direction models (SDMT) and the Multilingual model (MLMT):
 
 | Language | SDMT BLEU (%) | MLMT BLEU (%) |
-|----------|---------------|---------------|
+|:--------:|:-------------:|:-------------:|
 | en-sv    |     2.14      |               |
 | en-da    |     2.52      |               |
 | en-nb    |     7.64      |               |
@@ -56,7 +56,6 @@ Here are the languages supported by the MachineTranslationAPI. The table below s
 | da-en    |               |               |
 | da-nb    |               |               |
 | da-sv    |               |               |
-
 
 ## Training a Model
 
