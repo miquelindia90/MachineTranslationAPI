@@ -61,7 +61,13 @@ Here are the languages supported by the MachineTranslationAPI. The table below s
 
 To train a machine translation model, follow these steps:
 
-1. Prepare your training data in the desired format.
+1. Prepare your training data in the following format:
+
+      - You need to have data for the three common data splits: training, validation, and test.
+      - For each split you need at least two files: one for the source language and one for the target language.
+      - Additionally, you can have a third metadata file that contains information about the source and target pairs. A variable called language_filter_str can be used during training to filter the data based on the metadata.
+
+   * This structure follows LanguageWire public [data]{https://languagewire-my.sharepoint.com/personal/adas_languagewire_com/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fadas%5Flanguagewire%5Fcom%2FDocuments%2Fsenior%5Fml%5Fengineer%5Ftech%5Fchallenge%5Fdata%5Flw%5Fmlt%5Ftech%5Fchallenge%2Ezip&parent=%2Fpersonal%2Fadas%5Flanguagewire%5Fcom%2FDocuments&ga=1} format. If you have data in a different format, you will need to preprocess it to match this structure.
 
 2. Run the training script:
 
@@ -89,21 +95,6 @@ To evaluate a trained machine translation model, follow these steps:
 
 3. Analyze the evaluation results and make any necessary improvements to the model.
 
-## Using the API
 
-### Supported Languages
+## Findings
 
-| Language | BLEU (%) |
-|----------|----------|
-| en-sv    |   2.14   |
-| en-da    |   2.52   |
-| en-nb    |   7.64   |
-| sv-en    |   2.9    |
-| sv-nb    |          |
-| sv-da    |   5.09   |
-| nb-en    |          |
-| nb-da    |          |
-| nb-sv    |          |
-| da-en    |          |
-| da-nb    |          |
-| da-sv    |          |
