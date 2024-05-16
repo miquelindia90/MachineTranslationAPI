@@ -12,8 +12,7 @@ from data.data_utils import (
     get_metadata_languages_indexes,
     write_translation_output,
 )
-from data.tokenizer import MTTokenizer
-from models.transformer import Transformer
+
 from decoding.translator import Translator
 from data.scoring import calculate_bleu_score
 
@@ -87,7 +86,7 @@ def main(params: argparse.Namespace) -> None:
     """
     print(f"Evaluating model at {params.model}")
     model_parameters = yaml.safe_load(open(params.model + "/config.yaml", "r"))
-    translator = prepare_translator(model_parameters, params)
+    translator = prepare_translator(model_parameters=model_parameters, model_path= params.model, device = params.device)
     source_sentences, target_sentences = _prepare_evaluation_data(model_parameters)
     translated_sentences = _translate_sentences(translator, source_sentences)
     _evaluate_bleu_score(translated_sentences, target_sentences)
