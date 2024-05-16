@@ -60,7 +60,7 @@ class DataIterator(torch.utils.data.Dataset):
                 "tokenizer language pair must match the language pair filter"
             )
 
-    def __filter_lists_by_language(self, source_list: list, target_list: list) -> tuple:
+    def _filter_lists_by_language(self, source_list: list, target_list: list) -> tuple:
         """
         Filters the source and target lists based on the language pair filter.
 
@@ -109,7 +109,7 @@ class DataIterator(torch.utils.data.Dataset):
         self.source_list = read_text_sentences(self._source_path)
         self.target_list = read_text_sentences(self._target_path)
         if self._language_pair_filter != "None":
-            self.source_list, self.target_list = self.__filter_lists_by_language(
+            self.source_list, self.target_list = self._filter_lists_by_language(
                 self.source_list, self.target_list
             )
         tokenized_source_list, tokenized_target_list = self._tokenize_data_sentences(
