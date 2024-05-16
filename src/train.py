@@ -188,7 +188,7 @@ class Trainer:
         write_translation_output(source_sentences, target_sentences, translated_sentences, self.params["output_directory"] + "/translations.txt")
         
 
-    def _evaluated_assisted_bleu(self):
+    def _evaluate_assisted_bleu(self):
         assisted_bleu = 0.0
         batch_count = 0.0
         predictions = list()
