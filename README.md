@@ -61,15 +61,15 @@ To evaluate a trained machine translation model, follow these steps:
 
 | Language | BLEU (%) |
 |----------|----------|
-| en-sv    |   2.14   |
-| en-da    |          |
-| en-nb    |          |
-| sv-en    |          |
-| sv-nb    |          |
-| sv-da    |   5.09   |
-| nb-en    |          |
-| nb-da    |          |
-| nb-sv    |          |
-| da-en    |          |
-| da-nb    |          |
-| da-sv    |          |
+| en-sv | 2.14 |
+| en-da |      |
+| en-nb |      |
+| sv-en |      |
+| sv-nb |      |
+| sv-da | 5.09 |
+| nb-en |      |
+| nb-da |      |
+| nb-sv |      |
+| da-en |      |
+| da-nb |      |
+| da-sv |      |
