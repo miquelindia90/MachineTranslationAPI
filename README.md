@@ -50,7 +50,7 @@ Here are the languages supported by the MachineTranslationAPI. The table below s
 | sv-en    |     2.9       |               |
 | sv-nb    |               |               |
 | sv-da    |     5.09      |               |
-| nb-en    |               |               |
+| nb-en    |     7.58      |               |
 | nb-da    |               |               |
 | nb-sv    |               |               |
 | da-en    |               |               |
@@ -64,37 +64,38 @@ To train a machine translation model, follow these steps:
 1. Prepare your training data in the following format:
 
       - You need to have data for the three common data splits: training, validation, and test.
-      - For each split you need at least two files: one for the source language and one for the target language.
+      - For each split you need at least two files: one for the source language and one for the target language. This files must contain the sentences in the corresponding language, one sentence per line.
       - Additionally, you can have a third metadata file that contains information about the source and target pairs. A variable called language_filter_str can be used during training to filter the data based on the metadata.
 
-   * This structure follows LanguageWire public [data]{https://languagewire-my.sharepoint.com/personal/adas_languagewire_com/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fadas%5Flanguagewire%5Fcom%2FDocuments%2Fsenior%5Fml%5Fengineer%5Ftech%5Fchallenge%5Fdata%5Flw%5Fmlt%5Ftech%5Fchallenge%2Ezip&parent=%2Fpersonal%2Fadas%5Flanguagewire%5Fcom%2FDocuments&ga=1} format. If you have data in a different format, you will need to preprocess it to match this structure.
+      This structure follows LanguageWire public [data]{https://languagewire-my.sharepoint.com/personal/adas_languagewire_com/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fadas%5Flanguagewire%5Fcom%2FDocuments%2Fsenior%5Fml%5Fengineer%5Ftech%5Fchallenge%5Fdata%5Flw%5Fmlt%5Ftech%5Fchallenge%2Ezip&parent=%2Fpersonal%2Fadas%5Flanguagewire%5Fcom%2FDocuments&ga=1} format. If you have data in a different format, you will need to preprocess it to match this structure.
+      
 
 2. Run the training script:
 
-    ```bash
-    python train.py --data_path /path/to/training/data --model_path /path/to/save/model
-    ```
+   ```bash
+   python train.py configs/config.yaml
+   ```
 
-    Make sure to replace `/path/to/training/data` with the actual path to your training data and `/path/to/save/model` with the desired path to save the trained model.
+   This command runs the whole training process. All the variables needed for the training as data_path s, hyperparameters, and model architecture are defined in the config.yaml file. You can modify this file to adjust the training process to your needs.
 
-3. Monitor the training progress and adjust the hyperparameters as needed.
+   After the training is complete, the script will save the trained model to the specified output directory. You will find the following files in the output directory:
+      - config.yaml: A copy of the configuration file used for training.
+      - model.pth: The trained model weights.
+      - source_tokens.json and target_tokens.json: Tokenizers for the source and target languages.
+
+   Once you have the model trained you can evaluate it using the evaluation script or if you want to use it in production you can deploy it as an API.
 
 ## Evaluating a Model
 
 To evaluate a trained machine translation model, follow these steps:
 
-1. Prepare your evaluation data in the desired format.
-
-2. Run the evaluation script:
+1. Run the evaluation script:
 
     ```bash
-    python evaluate.py --data_path /path/to/evaluation/data --model_path /path/to/saved/model
+    python evaluate_model.py -m <model_path> -o <output_path> -d cpu
     ```
 
-    Make sure to replace `/path/to/evaluation/data` with the actual path to your evaluation data and `/path/to/saved/model` with the path to the saved trained model.
-
-3. Analyze the evaluation results and make any necessary improvements to the model.
-
+   This script will evaluate the model using the test data and save the translation results in the output_path. You can use wether if you want o use a cpu "cpu" or a gpu "cuda:0" to do the evaluation. If the cpu choice is made, the evaluation will be a bit slower, despit using dynamic quantization with int8. The result metric BLEU will be displayed in the terminal, at the end of the evaluation.
 
 ## Findings
 
