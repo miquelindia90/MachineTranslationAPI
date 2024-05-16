@@ -48,12 +48,12 @@ Here are the languages supported by the MachineTranslationAPI. The table below s
 | en-da    |     2.52      |               |
 | en-nb    |     7.64      |               |
 | sv-en    |     2.9       |               |
-| sv-nb    |               |               |
+| sv-nb    |     0.03      |               |
 | sv-da    |     5.09      |               |
 | nb-en    |     7.58      |               |
-| nb-da    |               |               |
-| nb-sv    |               |               |
-| da-en    |               |               |
+| nb-da    |     3.62      |               |
+| nb-sv    |     5.35      |               |
+| da-en    |     0.96      |               |
 | da-nb    |               |               |
 | da-sv    |               |               |
 
@@ -108,5 +108,10 @@ Before anything, make sure that you have installed the corresponding python depe
 
 This repo has been tested using the dataset provided by LanguageWire in [here]{https://languagewire-my.sharepoint.com/personal/adas_languagewire_com/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fadas%5Flanguagewire%5Fcom%2FDocuments%2Fsenior%5Fml%5Fengineer%5Ftech%5Fchallenge%5Fdata%5Flw%5Fmlt%5Ftech%5Fchallenge%2Ezip&parent=%2Fpersonal%2Fadas%5Flanguagewire%5Fcom%2FDocuments&ga=1}. Here are some findings, improvements and future work that could be done in this repository:
 
+1.- Data Processing: The data was pre-cleaned but still there was some work to do. We needed to implement the following steps:
+
+      - Normalization: It was needed to normalize the text, lowercasing the sentences and separating punctuation and other special charcaters from words. There were some special charaters that I didn't know to deal with. I prefered initally to let them be as punctuaion characters, but it could be a good idea to remove them. The lowercased text was also a bit delicated process, because looking in the sentences I noticed that some non-initial sentecene words have capital letters that could provide some linguistic information. I decided to lowercased all the text, but maybe it could have been a good idea to keep the capital letters in the non-initial words.
+
+      - Tokenization: The tokenization was done without using any external library. The tokenization was done in a way that the sentences were tokenized in words. In SDMT models we have worked in the word level. In the multilingual case we have worked with subwords in order to avoid dealing with a almos ~4x vocabulary size and also with the OOV issue.
 
 
