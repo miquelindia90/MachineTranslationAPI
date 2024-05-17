@@ -110,7 +110,7 @@ class SingleTokenizer:
         Returns:
             A list of words representing the sentence.
         """
-        return [self.id_to_word(int(word_id)) for word_id in sentence.split()]
+        return [self.id_to_word(int(word_id)) for word_id in sentence]
 
     def _words_to_id_list(self, words: list) -> list:
         """

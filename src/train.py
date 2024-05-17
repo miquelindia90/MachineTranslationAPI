@@ -199,7 +199,7 @@ class Trainer:
                 target_tensor.long().to(self.device),
             )
             prediction = self.net(source_tensor, target_tensor[:, :-1])
-            predictions.append(target_tensor[index, :].to_list() for index in range(target_tensor.size(0)))
+            predictions += [torch.argmax(prediction[index], dim=-1).squeeze().tolist() for index in range(prediction.size()[0])]
             assisted_bleu += calculate_batch_bleu_score(
                 prediction, target_tensor[:, 1:], target_length, self.tokenizer
             )
