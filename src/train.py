@@ -125,16 +125,13 @@ class Trainer:
             **data_loader_parameters,
         )
         self.test_iterator = DataIterator(
-                self.params["test_src_path"],
-                self.params["test_tgt_path"],
-                self.params["test_metadata_path"],
-                self.params["language_filter_str"],
-                self.tokenizer,
-            )
-        self.test_generator = DataLoader(
-            self.test_iterator,
-            **data_loader_parameters,
+            self.params["test_src_path"],
+            self.params["test_tgt_path"],
+            self.params["test_metadata_path"],
+            self.params["language_filter_str"],
+            self.tokenizer,
         )
+        self.test_generator = DataLoader(self.test_iterator, **data_loader_parameters,)
 
     def _load_optimizer(self):
         self.optimizer = optim.Adam(
@@ -170,9 +167,9 @@ class Trainer:
             valid_count += 1
 
         return valid_loss / valid_count, time.time() - valid_time
-    
+
     def _write_epoch_translations(self, predictions: list):
-        
+
         source_sentences = list()
         target_sentences = list()
         translated_sentences = list()
@@ -180,13 +177,19 @@ class Trainer:
         for index, prediction in enumerate(predictions):
             source_sentences.append(self.test_iterator.get_source_sentence(index))
             target_sentences.append(self.test_iterator.get_target_sentence(index))
-            translated_sentence = self.tokenizer.target_lang_list_id_to_word_list(prediction)
+            translated_sentence = self.tokenizer.target_lang_list_id_to_word_list(
+                prediction
+            )
             if translated_sentence[-1] == self.tokenizer.source_lang_word_to_id("EOS"):
                 translated_sentence = translated_sentence[:-1]
-            translated_sentences.append(' '.join(translated_sentence))
+            translated_sentences.append(" ".join(translated_sentence))
 
-        write_translation_output(source_sentences, target_sentences, translated_sentences, self.params["output_directory"] + "/translations.txt")
-        
+        write_translation_output(
+            source_sentences,
+            translated_sentences,
+            target_sentences,
+            self.params["output_directory"] + "/translations.txt",
+        )
 
     def _evaluate_assisted_bleu(self):
         assisted_bleu = 0.0
@@ -199,7 +202,12 @@ class Trainer:
                 target_tensor.long().to(self.device),
             )
             prediction = self.net(source_tensor, target_tensor[:, :-1])
-            predictions += [torch.argmax(prediction[index], dim=-1).squeeze().tolist() for index in range(prediction.size()[0])]
+            predictions += [
+                torch.argmax(prediction[index], dim=-1)
+                .squeeze()
+                .tolist()[: target_length[index].item()]
+                for index in range(prediction.size()[0])
+            ]
             assisted_bleu += calculate_batch_bleu_score(
                 prediction, target_tensor[:, 1:], target_length, self.tokenizer
             )
