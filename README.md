@@ -54,7 +54,7 @@ Here are the languages supported by the MachineTranslationAPI. The table below s
 | nb-da    |     3.62      |               |
 | nb-sv    |     5.35      |               |
 | da-en    |     0.96      |               |
-| da-nb    |               |               |
+| da-nb    |     4.71      |               |
 | da-sv    |               |               |
 
 ## Training a Model
