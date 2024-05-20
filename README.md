@@ -2,7 +2,7 @@
 
 Welcome to the MachineTranslationAPI repository! Here you will find all the scripts you need to train neural machine translation models from scratch, without relying on any pre-trained models. Once trained, you can easily deploy these models as an API, making it accessible for translation tasks. The API is also dockerized, allowing for seamless deployment on any cloud platform. Any doubt or question, please feel free to contact me or write any issue in the repository.
 
-If you don't want to train the models, there are also available pre-trained models. We currently provide a set of 12 SDMT models. I'm working on a secord version of a multilingual model, that will be available soon.
+If you don't want to train the models, there are also available pre-trained models. We currently provide a set of 12 SDMT models. I'm working on a second version of a multilingual model, that will be available soon.
 
 ## Using the API
 
@@ -67,7 +67,7 @@ Here are the languages supported by the MachineTranslationAPI. The table below s
 | nb-en    |     7.58      |
 | nb-da    |     3.62      |
 | nb-sv    |     5.35      |
-| da-en    |     0.96      |
+| da-en    |     0.95      |
 | da-nb    |     4.71      |
 | da-sv    |     3.2       |
 
