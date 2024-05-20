@@ -1,8 +1,8 @@
 # MachineTranslationAPI
 
-Welcome to the MachineTranslationAPI repository! Here you will find all the scripts you need to train a powerful machine translation model from scratch, without relying on any pre-trained models. Once trained, you can easily deploy the model as an API, making it accessible for translation tasks. The API is also dockerized, allowing for seamless deployment on any cloud platform. Get ready to unlock the potential of machine translation with this versatile and user-friendly repository!
+Welcome to the MachineTranslationAPI repository! Here you will find all the scripts you need to train neural machine translation models from scratch, without relying on any pre-trained models. Once trained, you can easily deploy these models as an API, making it accessible for translation tasks. The API is also dockerized, allowing for seamless deployment on any cloud platform. Any doubt or question, please feel free to contact me or write any issue in the repository.
 
-If you don't want to train the models, there are also available pre-trained models. We provide two versions: 12 SDMT models and a unique Multilingual model.
+If you don't want to train the models, there are also available pre-trained models. We currently provide a set of 12 SDMT models. I'm working on a secord version of a multilingual model, that will be available soon.
 
 ## Using the API
 
@@ -38,24 +38,38 @@ To use the API, follow these steps:
 
 Remember to replace `http://localhost:8000` with the appropriate URL if you are running the API server on a different host or port.
 
+If you wanted to use the API without the Docker container, you can run the following commands:
+
+1. Install the required dependencies by running the following command in the terminal:
+
+```bash
+   pip install -r requirements.txt
+```
+
+2. Run the API server using the following command:
+
+```bash
+   python3 api.py
+```
+
 ### Supported Languages
 
-Here are the languages supported by the MachineTranslationAPI. The table below shows the BLEU scores for the individual single direction models (SDMT) and the Multilingual model (MLMT):
+Here are the languages supported by the MachineTranslationAPI. The table below shows the BLEU scores for the individual single direction models (SDMT). 
 
-| Language | SDMT BLEU (%) | MLMT BLEU (%) |
-|:--------:|:-------------:|:-------------:|
-| en-sv    |     2.14      |               |
-| en-da    |     2.52      |               |
-| en-nb    |     7.64      |               |
-| sv-en    |     2.9       |               |
-| sv-nb    |     6.02      |               |
-| sv-da    |     5.09      |               |
-| nb-en    |     7.58      |               |
-| nb-da    |     3.62      |               |
-| nb-sv    |     5.35      |               |
-| da-en    |     0.96      |               |
-| da-nb    |     4.71      |               |
-| da-sv    |     3.2       |               |
+| Language | SDMT BLEU (%) |
+|:--------:|:-------------:|
+| en-sv    |     2.14      |
+| en-da    |     2.52      |
+| en-nb    |     7.64      |
+| sv-en    |     2.9       |
+| sv-nb    |     6.02      |
+| sv-da    |     5.09      |
+| nb-en    |     7.58      |
+| nb-da    |     3.62      |
+| nb-sv    |     5.35      |
+| da-en    |     0.96      |
+| da-nb    |     4.71      |
+| da-sv    |     3.2       |
 
 ## Training a Model
 
