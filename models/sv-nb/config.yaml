@@ -1,0 +1,27 @@
+train_src_path: data/train.src
+train_tgt_path: data/train.tgt
+train_metadata_path: data/train.metadata
+valid_src_path: data/valid.src
+valid_tgt_path: data/valid.tgt
+valid_metadata_path: data/valid.metadata
+test_src_path: data/test.src
+test_tgt_path: data/test.tgt
+test_metadata_path: data/test.metadata
+languages: sv-nb
+language_filter_str: '"src_lang": "sv", "tgt_lang": "nb"'
+output_directory: models/sv-nb
+requeue: false
+max_length: 200
+model_dimension: 128
+number_of_heads: 8
+hidden_dimension: 256
+number_of_layers: 3
+drop_probability: 0.1
+learning_rate: 0.001
+weight_decay: 0.0005
+batch_size: 16
+gradientAccumulation: 8
+max_epochs: 1000
+early_stopping: 15
+num_workers: 4
+print_metric_window: 1000
