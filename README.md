@@ -96,7 +96,7 @@ To train a machine translation model, follow these steps:
       - For each split you need at least two files: one for the source language and one for the target language. This files must contain the sentences in the corresponding language, one sentence per line.
       - Additionally, you can have a third metadata file that contains information about the source and target pairs. A variable called language_filter_str can be used during training to filter the data based on the metadata.
 
-      This structure follows LanguageWire public [data]{https://languagewire-my.sharepoint.com/personal/adas_languagewire_com/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fadas%5Flanguagewire%5Fcom%2FDocuments%2Fsenior%5Fml%5Fengineer%5Ftech%5Fchallenge%5Fdata%5Flw%5Fmlt%5Ftech%5Fchallenge%2Ezip&parent=%2Fpersonal%2Fadas%5Flanguagewire%5Fcom%2FDocuments&ga=1} format. If you have data in a different format, you will need to preprocess it to match this structure.
+      This structure follows LanguageWire public [data](https://languagewire-my.sharepoint.com/personal/adas_languagewire_com/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fadas%5Flanguagewire%5Fcom%2FDocuments%2Fsenior%5Fml%5Fengineer%5Ftech%5Fchallenge%5Fdata%5Flw%5Fmlt%5Ftech%5Fchallenge%2Ezip&parent=%2Fpersonal%2Fadas%5Flanguagewire%5Fcom%2FDocuments&ga=1) format. If you have data in a different format, you will need to preprocess it to match this structure.
       
 
 2. Run the training script:
@@ -105,7 +105,7 @@ To train a machine translation model, follow these steps:
    python train.py configs/config.yaml
    ```
 
-   This command runs the whole training process. All the variables needed for the training as data_path s, hyperparameters, and model architecture are defined in the config.yaml file. You can modify this file to adjust the training process to your needs.
+   This command runs the whole training process. All the variables needed for the training as data paths, hyperparameters, and model sizes are defined in the config.yaml file. You can modify this file to adjust the training process to your needs.
 
    After the training is complete, the script will save the trained model to the specified output directory. You will find the following files in the output directory:
       - config.yaml: A copy of the configuration file used for training.
@@ -128,7 +128,7 @@ Before anything, make sure that you have installed the corresponding python depe
 
 ## Findings
 
-This repo has been tested using the dataset provided by LanguageWire in [here]{https://languagewire-my.sharepoint.com/personal/adas_languagewire_com/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fadas%5Flanguagewire%5Fcom%2FDocuments%2Fsenior%5Fml%5Fengineer%5Ftech%5Fchallenge%5Fdata%5Flw%5Fmlt%5Ftech%5Fchallenge%2Ezip&parent=%2Fpersonal%2Fadas%5Flanguagewire%5Fcom%2FDocuments&ga=1}. Here are some findings, improvements and future work that could be done in this repository:
+This repo has been tested using the dataset provided by LanguageWire in [here](https://languagewire-my.sharepoint.com/personal/adas_languagewire_com/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fadas%5Flanguagewire%5Fcom%2FDocuments%2Fsenior%5Fml%5Fengineer%5Ftech%5Fchallenge%5Fdata%5Flw%5Fmlt%5Ftech%5Fchallenge%2Ezip&parent=%2Fpersonal%2Fadas%5Flanguagewire%5Fcom%2FDocuments&ga=1). Here are some findings, improvements and future work that could be done in this repository:
 
 1.- Data Processing: The data was pre-cleaned but still there was some work to do. We needed to implement the following steps:
 
