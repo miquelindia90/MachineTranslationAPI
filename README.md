@@ -136,17 +136,17 @@ This repo has been tested using the [dataset](https://languagewire-my.sharepoint
 
 1.2 *Tokenization*: The tokenization was implemented without using any external library. The tokenization was done in a way that the sentences were tokenized in words. In SDMT models we have worked in the word level. For future SDMT or multilingual models I would like to work with subwords ([BPE](https://aclanthology.org/P16-1162/) or [Unigram LM](https://arxiv.org/abs/1804.10959)) in order to avoid dealing with a almost ~4x vocabulary size (multilingual) and also with the OOV issue. 
 
-2.- **Algorithm Design**: The first idea was to train a collection of SDMT models that should be used in a multilingual platform API. Since I was not able to run thousand of trainings I had to choose whether to use a LAS based topology or a Transformer based one. I chose the Tranformer one and tried to run a first set of small models with a small Transformer configuration. A second set of trainings was done playing with some variable tuning. This second set of trainings have not lead to a noticeable improvement in terms of BLEU.
+2.- **Algorithm Design**: The first idea was to train a collection of SDMT models that should be used in a multilingual platform API. Since I was not able to run thousand of trainings I had to choose whether to use a LAS based topology or a Transformer based one. I chose the Tranformer one and tried to run a first set of small models with a small Transformer configuration. A second set of trainings was done playing with some configuration variable changes. This second set of trainings did not lead to a noticeable improvement in terms of BLEU.
 
-3.- **Results and Discussion**: The table with the BLEU metric for each language pair can be found in [Supported Languages](#supported-languages). After the training + evaluation steps, the results were not good. Here is a list of observations and things learned from the process.
+3.- **Results and Discussion**: The resuls table with the BLEU metric for each language pair can be found in [Supported Languages](#supported-languages). After the training + evaluation steps, the results were not good. Here is a list of observations and learnings made during the process.
 
-* It seems 150k samples per language pair is not enough to train a good MT model.
-* Maybe LAS could have worked better than Transformers given this ammount of data.
+* It seems 150k samples per language pair is not enough to train a good SDMT model with a Transformer.
+* Maybe LAS could have worked better than the Transformer given this ammount of data.
 * Subword tokenization could haved lead to a better BLEU in average. 
-* It seems a good idea to train a multilingual model, but I'm not sure if even with that the amount of data would be enough to train good models. Subword tokenization and using Language Tokens to identify the source/tgt language would be a nice approach start. 
-* It is needed to play more with some training hyper parameters.
+* It seems a good idea to train a multilingual model, but I'm not sure if even with that the amount of data would be enough to train good models. Subword tokenization and using Language Tokens to identify the source/tgt language pair would be a nice approach to start with. 
+* It is needed to play more with some training hyperparameters.
 * It is needed to play more with the decoding (Beam Search) variables.
-* It is needed to analyze more the reason of why some language-pair models have shown better results than others. Nb pairs show better results than the other combinations.
+* It is needed to analyze more the reason of why some language-pair models have shown better results than others. Nb pairs have shown better results than the other combinations.
 * It is needed to have a post processing system to correct some output tokenization issues.
 * Maybe starting from a pretained model and using a robust fine tuning method like a LORA based one could have shortened and improved this whole process. 
 
