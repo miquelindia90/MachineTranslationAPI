@@ -152,11 +152,11 @@ This repo has been tested using the [dataset](https://languagewire-my.sharepoint
 
 4.- **Training/Inference Optimization**:
 
-Here are some observations and procedures that could help to improve both training and inference steps.
+Here are some observations and methods that could help to improve both training and inference steps.
 
-* Better to train a 100 multilingual model than train 100x99 SDMT individual ones. This scales better in several cases like in training speed or total model size but mabe not in inference speed. Additionally, It would be a challenge when It was needed to train models with very different character dictionaries like latin + kanjis.
+* Better to train a 100 multilingual model than training 100x99 SDMT individual ones. This scales better in several cases metrics in training speed or total model size but mabe not in inference speed. Additionally, It would be a challenge when It was needed to train models with very different character dictionaries like latin + kanjis.
 
-* Inference optimization can be done with different libraries (Torch_Script, ONNX Runtime, TensorRT) and methods (static/dynamic quantization, weight pruning). If GPUS are available for production, channel multiplexation with GPU batching also could be considered. 
+* Inference optimization can be done with different libraries (Torch_Script, ONNX Runtime, TensorRT) and methods (static/dynamic quantization, weight pruning). If GPUS are available for production, channel multiplexation with GPU batching could also be considered. 
 
 5.- **Production Technical Considerations**:
 
