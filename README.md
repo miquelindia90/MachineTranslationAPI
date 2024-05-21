@@ -168,12 +168,12 @@ Here are few things that I think they should be considered for moving some model
 
 **6.- Improvement ROADMAP:**
 
-This is the lisf ot the things that I think that it should be done in order to obtain the best and most optimal multilingual MT model: 
+This is the lisf ot the things that I think that it should be done in order to obtain the best and most optimal Multilingual MT model: 
 
 * (Short Term): Implement a robust output text formatter.
 * (Short Term): Achieve a better set of SDMT models varying model/training hyperparameters and beam search variables.
-* (Short Term): Analyse Pre-Trained model + Fine Tuning approaches.
-* (Mid Term): Implement and train a  first Multilingual approach (4 languages).
-* (Mid Term): Explore different topologies and configurations for Multlingual models.
+* (Short Term): Analyse pre-trained models + fine tuning approaches.
+* (Mid Term): Implement and train a  first multilingual approach (4 languages).
+* (Mid Term): Explore different topologies and configurations for multlingual models.
 * (Mid Term): Explore how to optimize multilingual inference.
 * (Long Term): Explore how to scale the model to 100 languages.
