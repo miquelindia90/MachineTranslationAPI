@@ -8,11 +8,8 @@ If you don't want to train the models, there are also available pre-trained mode
 
 To use the API, follow these steps:
 
-0. Make sure models are correctly downloaded in models/ directory. These models are large so you need to use git lfs to download them. They size are around 300-500 MB. So if they don't have the correct size, you need to download them again. You can download them using the following command:
+0. Make sure models are correctly downloaded in models/ directory. These models are large so you need to use git lfs to have them downloaded in its original form (not the lfs pointer). They size are around 300-500 MB. So if they don't have the correct size, you need to fix them. You can download them using the following command:
 
-   ```bash
-   git lfs fetch
-   ```
    ```bash
    git lfs pull
    ```
