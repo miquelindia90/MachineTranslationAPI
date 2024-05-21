@@ -8,7 +8,7 @@ If you don't want to train the models, there are also available a collection of 
 
 To use the API, follow these steps:
 
-0. Make sure models are correctly downloaded in `models/` directory. These models are large so you need to use `git lfs` to have them downloaded in its original form (not the lfs pointer). They size are around 300-500 MB. So if they don't have the correct size, you need to fix them. You can convert them using the following command:
+0. Make sure models are correctly downloaded in `models/` directory. These models are large so you need to use `git lfs` to have them downloaded in its original form (not the lfs pointer). Their size is around 300-500 MB. So if they don't have the correct size, you need to fix them. You can convert them using the following command:
 
    ```bash
    git lfs pull
@@ -124,7 +124,7 @@ Before anything, make sure that you have installed the corresponding python depe
     python evaluate_model.py -m <model_path> -o <output_path> -d cpu
     ```
 
-   This script will evaluate the model using the test data and save the translation results in the output_path. You can use wether if you want o use a cpu "cpu" or a gpu "cuda:0" to do the evaluation. If the cpu choice is made, the evaluation will be a bit slower, despit using dynamic quantization with int8. The result metric BLEU will be displayed in the terminal, at the end of the evaluation.
+   This script will evaluate the model using the test data and save the translation results in the output_path. You can use whether if you want o use a cpu "cpu" or a gpu "cuda:0" to do the evaluation. If the cpu choice is made, the evaluation will be a bit slower, despit using dynamic quantization with int8. The result metric BLEU will be displayed in the terminal, at the end of the evaluation.
 
 ## Findings
 
@@ -136,7 +136,7 @@ This repo has been tested using the dataset provided by LanguageWire in [here](h
 
 1.2 *Tokenization*: The tokenization was done without using any external library. The tokenization was done in a way that the sentences were tokenized in words. In SDMT models we have worked in the word level. For future SDMT or multilingual models I would like have worked with subwords ([BPE](https://aclanthology.org/P16-1162/) or [Unigram LM](https://arxiv.org/abs/1804.10959)) in order to avoid dealing with a almost ~4x vocabulary size (multilingual) and also with the OOV issue. 
 
-2.- **Algorithm Design**: The first idea was to train a collection of SDMT models that should be used in a multi-lingual platform API. Since i was not able to do thousand of initial trainings I had to choose wether to use a LAS based topology or a Transformer based one. I chose the Tranformer one and tried to run a first set of small models with a small Transformer configuration. A second set of trainings was done playing with some variable tuning. This second set of trainings have not lead to a noticeable improvement in terms of BLEU.
+2.- **Algorithm Design**: The first idea was to train a collection of SDMT models that should be used in a multi-lingual platform API. Since i was not able to do thousand of initial trainings I had to choose whether to use a LAS based topology or a Transformer based one. I chose the Tranformer one and tried to run a first set of small models with a small Transformer configuration. A second set of trainings was done playing with some variable tuning. This second set of trainings have not lead to a noticeable improvement in terms of BLEU.
 
 3.- **Results and Discussion**: The table with the BLEU metric for each language pair can be found in [Supported Languages](#supported-languages). After the training + evaluation steps, the results were not good. Here is a list of observations and things learned from the process.
 
