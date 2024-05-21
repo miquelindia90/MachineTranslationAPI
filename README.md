@@ -60,7 +60,7 @@ If you wanted to use the API without the Docker container, you can run the follo
     ```
     By default the API is run on localhost:5000
     
-### Supported Languages
+## Supported Languages
 
 Here are the languages supported by the MachineTranslationAPI. The table below shows the BLEU scores for the individual single direction models (SDMT). 
 
@@ -130,10 +130,50 @@ Before anything, make sure that you have installed the corresponding python depe
 
 This repo has been tested using the dataset provided by LanguageWire in [here](https://languagewire-my.sharepoint.com/personal/adas_languagewire_com/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fadas%5Flanguagewire%5Fcom%2FDocuments%2Fsenior%5Fml%5Fengineer%5Ftech%5Fchallenge%5Fdata%5Flw%5Fmlt%5Ftech%5Fchallenge%2Ezip&parent=%2Fpersonal%2Fadas%5Flanguagewire%5Fcom%2FDocuments&ga=1). Here are some findings, improvements and future work that could be done in this repository:
 
-1.- Data Processing: The data was pre-cleaned but still there was some work to do. We needed to implement the following steps:
+1.- **Data Pre-Processing:** The data was pre-cleaned but still there was some work to do. We needed to implement the following steps:
 
-      - Normalization: It was needed to normalize the text, lowercasing the sentences and separating punctuation and other special charcaters from words. There were some special charaters that I didn't know to deal with. I prefered initally to let them be as punctuaion characters, but it could be a good idea to remove them. The lowercased text was also a bit delicated process, because looking in the sentences I noticed that some non-initial sentecene words have capital letters that could provide some linguistic information. I decided to lowercased all the text, but maybe it could have been a good idea to keep the capital letters in the non-initial words.
+1.1 *Normalization*: It was needed to normalize the text, lowercasing the sentences and separating punctuation and other special charcaters from words. There were some special charaters that I didn't know to deal with. I prefered initally to let them be as punctuaion characters, but it could be a good idea to remove them. The lowercased text was also a bit delicated process, because looking in the sentences I noticed that some non-initial sentecene words have capital letters that could provide some linguistic information. I decided to lowercased all the text, but maybe it could have been a good idea to keep the capital letters in the non-initial words.
 
-      - Tokenization: The tokenization was done without using any external library. The tokenization was done in a way that the sentences were tokenized in words. In SDMT models we have worked in the word level. In the multilingual case we have worked with subwords in order to avoid dealing with a almos ~4x vocabulary size and also with the OOV issue.
+1.2 *Tokenization*: The tokenization was done without using any external library. The tokenization was done in a way that the sentences were tokenized in words. In SDMT models we have worked in the word level. For future SDMT or multilingual models I would like have worked with subwords ([BPE](https://aclanthology.org/P16-1162/) or [Unigram LM](https://arxiv.org/abs/1804.10959)) in order to avoid dealing with a almost ~4x vocabulary size (multilingual) and also with the OOV issue. 
 
+2.- **Algorithm Design**: The first idea was to train a collection of SDMT models that should be used in a multi-lingual platform API. Since i was not able to do thousand of initial trainings I had to choose wether to use a LAS based topology or a Transformer based one. I chose the Tranformer one and tried to run a first set of small models with a small Transformer configuration. A second set of trainings was done playing with some variable tuning. This second set of trainings have not lead to a noticeable improvement in terms of BLEU.
 
+3.- **Results and Discussion**: The table with the BLEU metric for each language pair can be found in [Supported Languages](#supported-languages). After the training + evaluation steps, the results were not good. Here is a list of observations and things learned from the process.
+
+* It seems 150k samples per language pair is not enough to train a good MT model.
+* Maybe LAS could have worked better than Transformers given this ammount of data.
+* Subword tokenization could haved lead to a better BLEU in average. 
+* It seems a good idea to train a multilingual model, but I'm not sure if even with that the amount of data would be enough to train good models. Subword tokenization and using Language Tokens to identify the source/tgt language would be a nice approach start. 
+* It is needed to play more with some training hyper parameters.
+* It is needed to play more with the decoding (Beam Search) variables.
+* It is needed to analyze more the reason of why some language-pair models have shown better results than others. Nb pairs show better results than the other combinations.
+* It is needed to have a post processing system to correct some output tokenization issues.
+* Maybe starting from a pretained model and using a robust fine tuning method like a LORA based one could have shortened and improved this whole process. 
+
+4.- **Training/Inference Optimization**:
+
+Here are some observations and procedures that could help to improve both training and inference steps.
+
+* Better to train a 100 multilingual model than train 100x99 SDMT individual ones. This scales better in several cases like in training speed or total model size but mabe not in inference speed. Additionally, It would be a challenge when It was needed to train models with very different character dictionaries like latin + kanjis.
+
+* Inference optimization can be done with different libraries (Torch_Script, ONNX Runtime, TensorRT) and methods (static/dynamic quantization, weight pruning). If GPUS are available for production, channel multiplexation with GPU batching also could be considered. 
+
+5.- **Production Technical Considerations**:
+
+Here are few things that I think should be considered for moving some models to production:
+
+* SDMT approach works but seems inefficient. You could be having some models in RAM not being used meanwhile some other models have queded petitions because they are receiving more traffic.
+* Multilingual approach seems to be very efficient but if the model size is not very large. Overscaling the number of languages seems not a good idea if you are not able to have at least a X ammount of models concurrently working. Hence there is a trade-off that must be considered.
+* Not all the work comes from the AI. A good output text formatter could fix some model bad design issues and even handle some model uncorrect behaviors. 
+
+6.- **Improvement ROADMAP**:
+
+This is the lisf ot the things that I think that should be done in order to obtain the final multilingual MT model: 
+
+* (Short Term): Implement a robust output text formatter.
+* (Short Term): Achieve a better set of SDMT models varying model/training hyperparameters and beam serach variable optimizaiton.
+* (Short Term): Analyse Pre-Trained model + Fine Tuning approaches.
+* (Mid Term): Implement and train a  first Multilingual approach (4 languages).
+* (Mid Term): Explore different topologies, configurations for Multlingual models.
+* (Mid Term): Explore how to optimize multilingual inference.
+* (Long Term): Explore how to scale to 100 models.
