@@ -160,20 +160,20 @@ Here are some observations and methods that could help to improve both training 
 
 **5.- Production Technical Considerations:**
 
-Here are few things that I think should be considered for moving some models to production:
+Here are few things that I think they should be considered for moving some models to production:
 
-* SDMT approach works but seems inefficient. You could be having some models in RAM not being used meanwhile some other models have queded petitions because they are receiving more traffic.
+* SDMT approach works but seems inefficient. You could be having some models in RAM not being used meanwhile some other models have queued petitions because they are receiving more traffic.
 * Multilingual approach seems to be very efficient but if the model size is not very large. Overscaling the number of languages seems not a good idea if you are not able to have at least a X ammount of models concurrently working. Hence there is a trade-off that must be considered.
 * Not all the work comes from the AI. A good output text formatter could fix some model bad design issues and even handle some model uncorrect behaviors. 
 
 **6.- Improvement ROADMAP:**
 
-This is the lisf ot the things that I think that should be done in order to obtain the final multilingual MT model: 
+This is the lisf ot the things that I think that it should be done in order to obtain the best and most optimal multilingual MT model: 
 
 * (Short Term): Implement a robust output text formatter.
-* (Short Term): Achieve a better set of SDMT models varying model/training hyperparameters and beam serach variable optimizaiton.
+* (Short Term): Achieve a better set of SDMT models varying model/training hyperparameters and beam search variables.
 * (Short Term): Analyse Pre-Trained model + Fine Tuning approaches.
 * (Mid Term): Implement and train a  first Multilingual approach (4 languages).
-* (Mid Term): Explore different topologies, configurations for Multlingual models.
+* (Mid Term): Explore different topologies and configurations for Multlingual models.
 * (Mid Term): Explore how to optimize multilingual inference.
-* (Long Term): Explore how to scale to 100 models.
+* (Long Term): Explore how to scale the model to 100 languages.
