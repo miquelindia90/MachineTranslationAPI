@@ -1,6 +1,7 @@
 import sys
+import json
 
-from flask import Flask, request, jsonify
+from flask import Flask, request
 
 sys.path.append("src/")
 from inference.translation_platform import MultiLanguageTranslator
@@ -15,8 +16,11 @@ def translate_text():
     input_text = data["text"]
     language_pair = data["language_pair"]
     translated_text = translator.translate(input_text, language_pair)
-    return jsonify({"translated_text": translated_text})
-
+    response = {"translated_text": translated_text}
+    return app.response_class(
+        response=json.dumps(response, ensure_ascii=False),
+        mimetype='application/json'
+    )
 
 if __name__ == "__main__":
     app.run(debug=True)
