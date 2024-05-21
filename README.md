@@ -8,15 +8,15 @@ If you don't want to train the models, there are also available pre-trained mode
 
 To use the API, follow these steps:
 
-0. Make sure models are correctly downloaded in models/ directory. These models are large so you need to use git lfs to have them downloaded in its original form (not the lfs pointer). They size are around 300-500 MB. So if they don't have the correct size, you need to fix them. You can download them using the following command:
+0. Make sure models are correctly downloaded in `models/` directory. These models are large so you need to use `git lfs` to have them downloaded in its original form (not the lfs pointer). They size are around 300-500 MB. So if they don't have the correct size, you need to fix them. You can convert them using the following command:
 
    ```bash
    git lfs pull
    ```
 
-   This will download the pre-trained models and save them in the models/ directory.
+   This will download the pre-trained models in its correct format in the `models/` directory.
 
-1. Make sure you have Docker installed on your system.
+1. Make sure you have [Docker](https://www.docker.com/) installed on your system.
 
 2. Build the Docker image by running the following command in the terminal:
 
@@ -24,42 +24,42 @@ To use the API, follow these steps:
    docker build -t machine-translation-api .
    ```
 
-   This will create a Docker image named "machine-translation-api" based on the Dockerfile in the repository.
+   This will create a Docker image named `machine-translation-api` based on the Dockerfile in the repository.
 
 3. Run the Docker container using the following command:
 
    ```bash
-   docker run -p <HOST_NUMBER>:5000 machine-translation-api
+   docker run -p <HOST_PORT>:5000 machine-translation-api
    ```
 
-   This will start the API server on port <HOST_NUMBER>.
+   This will start the API server on port <HOST_PORT>.
 
 4. Once the API server is running, you can make translation requests using curl or any other HTTP client. Here's an example curl request:
 
    ```bash
-   curl -X POST -H "Content-Type: application/json" -d '{"language_pair": "en-sv", "text": "Hello, world!"}' http://localhost:8000/translate
+   curl -X POST -H "Content-Type: application/json" -d '{"language_pair": "en-sv", "text": "Hello, world!"}' http://localhost:<HOST_PORT>/translate
    ```
 
-   This curl command sends a POST request to the API server with a JSON payload containing the source language, target language, and text to be translated. Adjust the values according to your needs.
+   This curl command sends a `POST` request to the API server with a JSON payload containing the language pair (`src-tgt`) and text to be translated. Adjust the values according to your needs.
 
    The API will respond with a JSON object containing the translated text.
-
-Remember to replace `http://localhost:8000` with the appropriate URL if you are running the API server on a different host or port.
 
 If you wanted to use the API without the Docker container, you can run the following commands:
 
 1. Install the required dependencies by running the following command in the terminal:
 
-```bash
-   pip install -r requirements.txt
-```
+    ```bash
+    pip install -r requirements.txt
+    ```
+    The repository supports python=[3.8, 3.9, 3.10]
 
 2. Run the API server using the following command:
 
-```bash
-   python3 api.py
-```
-
+    ```bash
+    python3 api.py
+    ```
+    By default the API is run on localhost:5000
+    
 ### Supported Languages
 
 Here are the languages supported by the MachineTranslationAPI. The table below shows the BLEU scores for the individual single direction models (SDMT). 
