@@ -37,7 +37,7 @@ To use the API, follow these steps:
 4. Once the API server is running, you can make translation requests using curl or any other HTTP client. Here's an example curl request:
 
    ```bash
-   curl -X POST -H "Content-Type: application/json" -d '{"language_pair": "en-sv", "text": "Hello, world!"}' http://localhost:<HOST_PORT>/translate
+   curl -X POST -H "Content-Type: application/json" -d '{"language_pair": "en-sv", "text": "Get quick answers from Wingate by Wyndham Oklahoma City Airport staff and past guests."}' http://localhost:<HOST_PORT>/translate
    ```
 
    This curl command sends a `POST` request to the API server with a JSON payload containing the language pair (`src-tgt`) and the text to be translated. Adjust the values according to your needs.
