@@ -2,7 +2,7 @@
 
 Welcome to the MachineTranslationAPI repository! Here you will find all the scripts you need to train a set of neural machine translation models from scratch, without relying on any pre-trained models. Once trained, you can easily deploy these models as an API, making it accessible for translation tasks. The API is also dockerized, allowing for seamless deployment on any cloud platform. Any doubt or question, please feel free to contact me or write any issue in the repository.
 
-If you don't want to train the models, there are also available a collection of pre-trained models. We currently provide a set of 12 SDMT models. I'm working on a second version of a multilingual model, that will be available soon.
+If you don't want to train the models, there are also available a collection of pre-trained models. We currently provide a set of 12 Single Direction Machine Translation (SDMT) models. I'm working on a second version of a multilingual model, that will be available soon.
 
 ## Using the API
 
@@ -14,7 +14,7 @@ To use the API, follow these steps:
    git lfs pull
    ```
 
-   This will download the pre-trained models in its correct format in the `models/` directory.
+   This will download the pre-trained models in their correct format in the `models/` directory.
 
 1. Make sure you have [Docker](https://www.docker.com/) installed on your system.
 
@@ -40,13 +40,13 @@ To use the API, follow these steps:
    curl -X POST -H "Content-Type: application/json" -d '{"language_pair": "en-sv", "text": "Hello, world!"}' http://localhost:<HOST_PORT>/translate
    ```
 
-   This curl command sends a `POST` request to the API server with a JSON payload containing the language pair (`src-tgt`) and text to be translated. Adjust the values according to your needs.
+   This curl command sends a `POST` request to the API server with a JSON payload containing the language pair (`src-tgt`) and the text to be translated. Adjust the values according to your needs.
 
    The API will respond with a JSON object containing the translated text.
 
 If you wanted to use the API without the Docker container, you can run the following commands:
 
-1. Install the required dependencies by running the following command in the terminal:
+1. Install first the required dependencies by running the following command in the terminal:
 
     ```bash
     pip install -r requirements.txt
@@ -56,13 +56,13 @@ If you wanted to use the API without the Docker container, you can run the follo
 2. Run the API server using the following command:
 
     ```bash
-    python3 api.py
+    python api.py
     ```
-    By default the API is run on localhost:5000
+    By default the API will be run on localhost:5000
     
 ## Supported Languages
 
-Here are the languages supported by the MachineTranslationAPI. The table below shows the BLEU scores for the individual single direction models (SDMT). 
+Here are the languages supported by the MachineTranslationAPI. The table below shows the BLEU scores for the individual SDMT models. 
 
 | Language | SDMT BLEU (%) |
 |:--------:|:-------------:|
@@ -94,7 +94,7 @@ To train a machine translation model, follow these steps:
 
       - You need to have data for the three common data splits: training, validation, and test.
       - For each split you need at least two files: one for the source language and one for the target language. This files must contain the sentences in the corresponding language, one sentence per line.
-      - Additionally, you can have a third metadata file that contains information about the source and target pairs. A variable called language_filter_str can be used during training to filter the data based on the metadata.
+      - Additionally, you can have a third metadata file that contains information about the source and target pairs. A variable called `language_filter_str` can be used during training to filter the data based on the metadata.
 
       This structure follows LanguageWire public [data](https://languagewire-my.sharepoint.com/personal/adas_languagewire_com/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fadas%5Flanguagewire%5Fcom%2FDocuments%2Fsenior%5Fml%5Fengineer%5Ftech%5Fchallenge%5Fdata%5Flw%5Fmlt%5Ftech%5Fchallenge%2Ezip&parent=%2Fpersonal%2Fadas%5Flanguagewire%5Fcom%2FDocuments&ga=1) format. If you have data in a different format, you will need to preprocess it to match this structure.
       
@@ -124,7 +124,7 @@ Before anything, make sure that you have installed the corresponding python depe
     python evaluate_model.py -m <model_path> -o <output_path> -d cpu
     ```
 
-   This script will evaluate the model using the test data and save the translation results in the output_path. You can use whether if you want o use a cpu "cpu" or a gpu "cuda:0" to do the evaluation. If the cpu choice is made, the evaluation will be a bit slower, despit using dynamic quantization with int8. The result metric BLEU will be displayed in the terminal, at the end of the evaluation.
+   This script will evaluate the model using the test data and save the translation results in the output_path. You can use whether if you want o use a cpu "cpu" or a gpu "cuda:0" to do the evaluation. If the cpu choice is made, the evaluation will be a bit slower, despite using dynamic quantization with int8. The result metric BLEU will be displayed in the terminal, at the end of the evaluation.
 
 ## Findings
 
