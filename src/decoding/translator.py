@@ -8,6 +8,22 @@ from decoding.beamsearch import BeamSearcher
 
 
 class Translator:
+    """
+    A class that represents a machine translation translator.
+
+    Args:
+        net (torch.nn.Module): The neural network model used for translation.
+        tokenizer (MTTokenizer): The tokenizer used for tokenizing the input and output sentences.
+        device (torch.device, optional): The device on which the model will be run (default: torch.device("cpu")).
+
+    Attributes:
+        net (torch.nn.Module): The neural network model used for translation.
+        tokenizer (MTTokenizer): The tokenizer used for tokenizing the input and output sentences.
+        beam_searcher (BeamSearcher): The beam searcher used for decoding the output sequence.
+        device (torch.device): The device on which the model will be run.
+
+    """
+
     def __init__(
         self,
         net: torch.nn.Module,
@@ -24,6 +40,16 @@ class Translator:
         self.net.to(self.device)
 
     def _init_tokenizer(self, tokenizer: MTTokenizer):
+        """
+        Initializes the tokenizer.
+
+        Args:
+            tokenizer (MTTokenizer): The tokenizer used for tokenizing the input and output sentences.
+
+        Raises:
+            Exception: If the tokenizer is not trained.
+
+        """
         self.tokenizer = tokenizer
         if (
             self.tokenizer.get_source_tokens_dictionary() is dict()
@@ -34,6 +60,16 @@ class Translator:
             )
 
     def _prepare_input_tensor(self, sentence: str) -> torch.Tensor:
+        """
+        Prepares the input sentence for translation.
+
+        Args:
+            sentence (str): The input sentence to be translated.
+
+        Returns:
+            torch.Tensor: The input sentence tensor.
+
+        """
         sentence_ids = self.tokenizer.source_lang_sentence_to_id_list(sentence)
         sentence_tensor = torch.tensor([sentence_ids], dtype=torch.long).to(self.device)
         decoder_ids = [self.tokenizer.source_lang_word_to_id("SOS")]
@@ -41,6 +77,16 @@ class Translator:
         return sentence_tensor, decoder_tensor
 
     def translate(self, sentence: str) -> str:
+        """
+        Translates the input sentence.
+
+        Args:
+            sentence (str): The input sentence to be translated.
+
+        Returns:
+            str: The translated sentence.
+
+        """
         self.beam_searcher.reset()
         encoder_input_tensor, decoder_tensor = self._prepare_input_tensor(sentence)
         encoder_output = self.net.encoder(encoder_input_tensor, None)
