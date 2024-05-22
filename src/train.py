@@ -19,7 +19,28 @@ from models.transformer import Transformer
 
 
 class Trainer:
-    def __init__(self, params, device):
+    """
+    The Trainer class is responsible for training a machine translation model.
+
+    Args:
+        params (dict): A dictionary containing the training parameters.
+        device (str): The device to be used for training (e.g., 'cpu', 'cuda').
+
+    Attributes:
+        params (dict): A dictionary containing the training parameters.
+        device (torch.device): The device to be used for training.
+        net (Transformer): The machine translation model.
+        tokenizer (MTTokenizer): The tokenizer for processing the training data.
+        optimizer (torch.optim.Adam): The optimizer for updating the model parameters.
+        criterion (torch.nn.CrossEntropyLoss): The loss function for calculating the training loss.
+        training_generator (torch.utils.data.DataLoader): The data loader for the training data.
+        validation_generator (torch.utils.data.DataLoader): The data loader for the validation data.
+        test_generator (torch.utils.data.DataLoader): The data loader for the test data.
+        starting_epoch (int): The starting epoch for training.
+        best_valid_loss (float): The best validation loss achieved during training.
+        stopping (float): The stopping criterion for early stopping.
+    """
+    def __init__(self, params, device: str):
         self.params = params
         self.device = device
         self._load_data()
@@ -28,7 +49,20 @@ class Trainer:
         self._load_criterion()
         self._initialize_training_variables()
 
-    def __load_previous_states(self):
+    def _load_previous_states(self) -> None:
+        """
+        Load previous states from the output directory.
+
+        This method loads the most recent checkpoint file from the output directory,
+        and restores the model, optimizer, training settings, and starting epoch
+        from the checkpoint.
+
+        If no checkpoint file is found in the output directory, the starting epoch
+        is set to 1.
+
+        Returns:
+            None
+        """
         list_files = os.listdir(self.params["output_directory"])
         list_files = [
             self.params["output_directory"] + "/" + f
@@ -49,16 +83,18 @@ class Trainer:
         else:
             self.starting_epoch = 1
 
-    def _initialize_training_variables(self):
+    def _initialize_training_variables(self) -> None:
+        """Initializes the training variables."""
         if self.params["requeue"]:
-            self.__load_previous_states()
+            self._load_previous_states()
         else:
             self.starting_epoch = 0
 
         self.best_valid_loss = 1_000
         self.stopping = 0.0
 
-    def _load_network(self):
+    def _load_network(self) -> None:
+        """Load the Transformer network model."""
         self.net = Transformer(
             source_padding_index=self.tokenizer.source_lang_word_to_id("PAD"),
             target_padding_index=self.tokenizer.target_lang_word_to_id("PAD"),
@@ -79,7 +115,17 @@ class Trainer:
             print("Let's use", torch.cuda.device_count(), "GPUs!")
             self.net = torch.nn.DataParallel(self.net)
 
-    def _load_data(self):
+    def _load_data(self) -> None:
+        """
+        Load data for training.
+
+        This method loads the training, validation, and test data for the machine translation model.
+        It initializes the tokenizer, trains it on the training data, and saves the tokens dictionary.
+        It also creates data loaders for the training, validation, and test data.
+
+        Returns:
+            None
+        """
         print("Loading Data for Training")
         self.tokenizer = MTTokenizer()
         self.tokenizer.train(
@@ -133,23 +179,32 @@ class Trainer:
         )
         self.test_generator = DataLoader(self.test_iterator, **data_loader_parameters,)
 
-    def _load_optimizer(self):
+    def _load_optimizer(self) -> None:
+        """Load the optimizer for the neural network model."""
         self.optimizer = optim.Adam(
             self.net.parameters(),
             lr=self.params["learning_rate"],
             weight_decay=self.params["weight_decay"],
         )
 
-    def _load_criterion(self):
+    def _load_criterion(self) -> None:
+        """Loads the criterion for the machine translation model."""
         self.criterion = torch.nn.CrossEntropyLoss(
             ignore_index=self.tokenizer.target_lang_word_to_id("PAD")
         )
 
-    def _initialize_batch_variables(self):
+    def _initialize_batch_variables(self) -> None:
+        """Initializes the training batch variables."""
         self.train_loss = [None] * len(self.training_generator)
         self.train_batch = 0
 
-    def _calculate_valid_loss(self):
+    def _calculate_valid_loss(self) -> tuple:
+        """
+        Calculates the average validation loss and the time taken for validation.
+
+        Returns:
+            Tuple[float, float]: A tuple containing the average validation loss and the time taken for validation.
+        """
         valid_time = time.time()
         valid_loss, valid_count = 0.0, 0
 
@@ -168,8 +223,16 @@ class Trainer:
 
         return valid_loss / valid_count, time.time() - valid_time
 
-    def _write_epoch_translations(self, predictions: list):
+    def _write_epoch_translations(self, predictions: list) -> None:
+        """
+        Write the translations generated during an epoch to a file.
 
+        Args:
+            predictions (list): A list of predicted translations.
+
+        Returns:
+            None
+        """
         source_sentences = list()
         target_sentences = list()
         translated_sentences = list()
@@ -191,7 +254,14 @@ class Trainer:
             self.params["output_directory"] + "/translations.txt",
         )
 
-    def _evaluate_assisted_bleu(self):
+    def _evaluate_assisted_bleu(self) -> float:
+        """
+        Calculate the assisted BLEU score for the translation model.
+
+        Returns:
+            float: The assisted BLEU score.
+        """
+
         assisted_bleu = 0.0
         batch_count = 0.0
         predictions = list()
@@ -214,7 +284,16 @@ class Trainer:
         self._write_epoch_translations(predictions)
         return assisted_bleu / batch_count
 
-    def _validate(self):
+    def _validate(self) -> None:
+        """
+        Perform validation on the model.
+
+        This method evaluates the model on the validation dataset and prints the validation loss,
+        assisted BLEU score, and elapsed time. It also implements early stopping and saves the best model.
+
+        Returns:
+            None
+        """
         with torch.no_grad():
             self.net.eval()
             valid_loss, valid_elpased_time = self._calculate_valid_loss()
@@ -245,11 +324,30 @@ class Trainer:
 
             self.net.train()
 
-    def _update(self):
+    def _update(self) -> None:
+        """ 
+        Performs an update step for the model parameters.
+
+        This method applies the optimizer's step function to update the model parameters
+        and then resets the gradients to zero using the optimizer's zero_grad function.
+
+        Returns:
+            None
+        """
         self.optimizer.step()
         self.optimizer.zero_grad()
 
-    def _update_metrics(self, loss, batch_looper):
+    def _update_metrics(self, loss: float, batch_looper: tqdm) -> None:
+        """
+        Update the metrics for the training process.
+
+        Args:
+            loss (float): The loss value for the current batch.
+            batch_looper (tqdm): The batch looper object used for iterating over the training batches.
+
+        Returns:
+            None
+        """
         self.train_loss[self.train_batch] = loss.item()
         self.train_batch += 1
         index_range = slice(
@@ -267,6 +365,16 @@ class Trainer:
         batch_looper.set_postfix(loss=sum(self.train_loss[index_range]) / index_len)
 
     def train(self):
+        """
+        Trains the model using the training data.
+
+        This method loops over the dataset multiple times, performs forward and backward propagation,
+        updates the model parameters, and calculates the loss. It also validates the model after each epoch
+        and stops training if the early stopping criterion is met.
+
+        Returns:
+            None
+        """
         print("Start Training")
         for self.epoch in range(
             self.starting_epoch, self.params["max_epochs"]
